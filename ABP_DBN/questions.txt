@@ -1,0 +1,13 @@
+
+Thoughts and Questions:
+
+1. Properly sampling from this many particles in a reasonable amount of time?
+
+2. Properly giving weights to each particle?
+
+3. Do we want to discretize our particle states so we are able to actually have
+    many particles in the same state? Otherwise our weights will all be one.
+
+4. Why do all particles have a constant BP over time? And why does the noise only increase the BP?
+
+
