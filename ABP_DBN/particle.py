@@ -1,6 +1,7 @@
 import itertools
 import util 
 from random import random
+import random
 import math 
 
 
@@ -40,12 +41,11 @@ class Particle:
 
 		self.ending_valve_state=self.starting_valve_state
 
-
 	def update(self):
 		if not SENSIBLE_SIMULATION:   #TODO WTF why is this happening
-			self.true_pulse_bp= self.true_pulse_bp + 3*random()
-			self.true_mean_bp= self.true_mean_bp + 6*random()
-			self.true_sys_fract = self.true_sys_fract + 0.01*random()
+			self.true_pulse_bp= self.true_pulse_bp + 3*random.gauss(0,1)
+			self.true_mean_bp= self.true_mean_bp + 6*random.gauss(0,1)
+			self.true_sys_fract = self.true_sys_fract + 0.01*random.gauss(0,1)
 
 
 		self.true_dia_bp=self.true_mean_bp - (self.true_pulse_bp*self.true_sys_fract)
@@ -54,12 +54,9 @@ class Particle:
 
 		bag_pressure_random= 200*random()
 		if bag_pressure_random<=1:
-			self.bag_pressure= 250+30*random()
+			self.bag_pressure= 250+30*random.gauss(0,1)
 		else:
 			self.bag_pressure=0.999*self.bag_pressure
-
-
-
 
 
 		new_event_random_num=180*random()-1
@@ -89,7 +86,7 @@ class Particle:
 
 		new_event_initial_length=.1*.3*random()	
 		if new_valve_event==0 or new_valve_event==1:
-			new_event_initial_length=math.pow(10,-4)*random()
+			new_event_initial_length=math.pow(10,-4)*random.gauss(0,1)
 
 
 		if new_valve_event==0:
@@ -142,9 +139,9 @@ class Particle:
 		self.apparent_sys_bp=min(bag_pressure, (1 - bag_time_frac-zero_time_frac)*(self.true_sys_bp+zero_pressure) 
 								+ bag_time_frac * max(bag_pressure + zero_pressure,300) + zero_time_frac*self.zero_pressure)
 
-		self.observed_dia_bp= self.apparent_dia_bp+3*random()
-		self.observed_mean_bp=self.apparent_mean_pressure+random()
-		self.observed_sys_bp=self.apparent_sys_bp+3*random()
+		self.observed_dia_bp= self.apparent_dia_bp+3*random.gauss(0,1)
+		self.observed_mean_bp=self.apparent_mean_pressure+random.gauss(0,1)
+		self.observed_sys_bp=self.apparent_sys_bp+3*random.gauss(0,1)
 
 
 		# self.true_dia_bp
