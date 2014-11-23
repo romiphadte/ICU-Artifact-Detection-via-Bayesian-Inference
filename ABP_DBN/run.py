@@ -50,4 +50,5 @@ def main():
 
 	plt.show()
 	# return dataOut
-
+if __name__ == "__main__":
+	main()
