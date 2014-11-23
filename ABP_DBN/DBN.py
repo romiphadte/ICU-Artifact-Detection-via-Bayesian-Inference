@@ -26,14 +26,14 @@ class DBN:
     def weightAndResample(self,observation):
         """
         observation should be taken in a size 3 tuple in the order
-        (dia_bp, mean_bp, sys_bp)
+    
 
         """
 
         items = dict()
-        dia_bp = observation[0]
-        mean_bp = observation[1]
-        sys_bp = observation[2]
+        dia_bp = observation[2]
+        mean_bp = observation[0]
+        sys_bp = observation[1]
 
         particles_dia_bp = []
         particles_mean_bp = []
@@ -47,8 +47,12 @@ class DBN:
         w1 = stats.norm.pdf(dia_bp,particles_dia_bp,3)
         w2 = stats.norm.pdf(mean_bp,particles_mean_bp,1)
         w3 = stats.norm.pdf(sys_bp,particles_sys_bp,3)
-
         totalWeight = w1*w2*w3
+        if totalWeight.sum() == 0:
+            # self.__init__(self.samples)
+            # self.observe(observation)
+            return
+
         for i,part in enumerate(self.particles):
             items[i] = part
         samp = nSample(totalWeight,list(range(self.samples)),self.samples)
@@ -75,6 +79,7 @@ class DBN:
         # plt.hist(stats_dia_bp)
         # plt.show()
         return toRtn
+        
 
 
         

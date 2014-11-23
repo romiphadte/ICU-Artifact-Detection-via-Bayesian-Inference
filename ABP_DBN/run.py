@@ -1,6 +1,6 @@
 import csv
 import DBN
-
+import matplotlib.pyplot as plt
 def getData(inp="dataset7.txt"):
 	f = file(inp)
 	lines = f.readlines()
@@ -12,7 +12,7 @@ def getData(inp="dataset7.txt"):
 
 	
 def main():
-	data = getData()
+	data = list(getData())
 	bayesNet = DBN.DBN()
 	dataOut = []
 	count = 0
@@ -22,5 +22,32 @@ def main():
 		bayesNet.elapseTime()
 		dataOut.append(bayesNet.getStats())
 		count += 1
-	return dataOut
+	DiaObserved = [d["dia_bp"][0] for d in dataOut]
+	MeanObserved = [d["mean_bp"][0] for d in dataOut]
+	SysObserved = [d["sys_bp"][0] for d in dataOut]
+	BagPressure = [d["bag_pressure"][0] for d in dataOut]
+
+	DiaObservedErr = [d["dia_bp"][1] for d in dataOut]
+	MeanObservedErr = [d["mean_bp"][1] for d in dataOut]
+	SysObservedErr = [d["sys_bp"][1] for d in dataOut]
+	BagPressureErr = [d["bag_pressure"][1] for d in dataOut]
+
+	DiaData = map(lambda x: x[2], data)
+	MeanData = map(lambda x: x[0], data)
+	SysData = map(lambda x: x[1], data)
+	l = list(range(31))
+	plt.plot(l,DiaData)
+	plt.plot(l,DiaObserved)
+	plt.fill_between(l,list(x[0] - x[1] for x in zip(DiaObserved,DiaObservedErr)),list(x[0] + x[1] for x in zip(DiaObserved,DiaObservedErr)),interpolate=True)
+
+	plt.plot(l,MeanData)
+	plt.plot(l,MeanObserved)
+	plt.fill_between(l,list(x[0] - x[1] for x in zip(MeanObserved,MeanObservedErr)),list(x[0] + x[1] for x in zip(MeanObserved,MeanObservedErr)),interpolate=True)
+
+	plt.plot(l,SysData)
+	plt.plot(l,SysObserved)
+	plt.fill_between(l,list(x[0] - x[1] for x in zip(SysObserved,SysObservedErr)),list(x[0] + x[1] for x in zip(SysObserved,SysObservedErr)),interpolate=True)
+
+	plt.show()
+	# return dataOut
 
