@@ -1,7 +1,8 @@
 import csv
 import DBN
 import matplotlib.pyplot as plt
-def getData(inp="dataset7.txt"):
+
+def getData(inp="../ABP_data_11traces_1min/dataset2.txt"):
 	f = file(inp)
 	lines = f.readlines()
 	data = (map(float,l.split(" ")[:3]) for l in lines)
@@ -18,10 +19,14 @@ def main():
 	count = 0
 	for each in data:
 		print("timestep: " + str(count) +  " Observation: " + str(each))
+		# if (bayesNet.observe(each) != False):
 		bayesNet.observe(each)
 		bayesNet.elapseTime()
+
 		dataOut.append(bayesNet.getStats())
 		count += 1
+
+
 	DiaObserved = [d["dia_bp"][0] for d in dataOut]
 	MeanObserved = [d["mean_bp"][0] for d in dataOut]
 	SysObserved = [d["sys_bp"][0] for d in dataOut]
@@ -47,6 +52,9 @@ def main():
 	plt.plot(l,SysData)
 	plt.plot(l,SysObserved)
 	plt.fill_between(l,list(x[0] - x[1] for x in zip(SysObserved,SysObservedErr)),list(x[0] + x[1] for x in zip(SysObserved,SysObservedErr)),interpolate=True)
+
+	plt.plot(l,BagPressure)
+	plt.fill_between(l,list(x[0] - x[1] for x in zip(BagPressure,BagPressureErr)),list(x[0] + x[1] for x in zip(BagPressure,BagPressureErr)),interpolate=True)
 
 	plt.show()
 	# return dataOut

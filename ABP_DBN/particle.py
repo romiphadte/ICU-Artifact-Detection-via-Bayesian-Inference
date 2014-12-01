@@ -2,9 +2,9 @@ import itertools
 import util 
 import random
 import math 
+import copy
 
-
-SENSIBLE_SIMULATION=True
+SENSIBLE_SIMULATION=False
 
 class Particle:
 	def __init__(self):
@@ -28,17 +28,31 @@ class Particle:
 
 		self.apparent_dia_bp=0
 		self.apparent_sys_bp=0
-		self.observed_mean_bp=0
+		self.apparent_mean_bp=0
 
-		self.starting_valve_state=0
-		random_num = 100*random.random()
-		if random_num<=1:
-			self.starting_valve_state=1
-		elif random_num<=2:
-			self.starting_valve_state=2
+		# self.starting_valve_state=0
+		# random_num = 100*random.random()
+		# if random_num<=1:
+		# 	self.starting_valve_state=1
+		# elif random_num<=2:
+		# 	self.starting_valve_state=2
 
 
 		self.ending_valve_state=self.starting_valve_state
+	def copyP(self):
+		a = Particle()
+		a.true_pulse_bp = self.true_pulse_bp
+		a.true_mean_bp = self.true_mean_bp
+		a.true_sys_fract = self.true_sys_fract
+		a.bag_pressure = self.bag_pressure
+		a.zero_pressure = self.zero_pressure
+		a.starting_valve_state = self.starting_valve_state
+		a.starting_valve_state = self.starting_valve_state
+		a.ending_valve_state = self.ending_valve_state
+		a.apparent_dia_bp = self.apparent_dia_bp
+		a.apparent_sys_bp = self.apparent_sys_bp
+		a.apparent_mean_bp= self.apparent_mean_bp
+		return a
 
 	def update(self):
 		if not SENSIBLE_SIMULATION:   #TODO WTF why is this happening
@@ -128,20 +142,23 @@ class Particle:
 		zero_time_frac=calc
 		if calc<.03:
 			zero_time_frac=0
-
+		# print(self.bag_pressure, (1 - bag_time_frac-zero_time_frac)*(self.true_dia_bp+self.zero_pressure) 
+		# 						+ bag_time_frac * max(self.bag_pressure + self.zero_pressure,300) + zero_time_frac*self.zero_pressure)
 		self.apparent_dia_bp=min(self.bag_pressure, (1 - bag_time_frac-zero_time_frac)*(self.true_dia_bp+self.zero_pressure) 
 								+ bag_time_frac * max(self.bag_pressure + self.zero_pressure,300) + zero_time_frac*self.zero_pressure)
 
-		self.apparent_mean_pressure=min(self.bag_pressure, (1 - bag_time_frac-zero_time_frac)*(self.true_mean_bp+self.zero_pressure) 
+		self.apparent_mean_bp=min(self.bag_pressure, (1 - bag_time_frac-zero_time_frac)*(self.true_mean_bp+self.zero_pressure) 
 								+ bag_time_frac * max(self.bag_pressure + self.zero_pressure,300) + zero_time_frac*self.zero_pressure)
-
+		
 		self.apparent_sys_bp=min(self.bag_pressure, (1 - bag_time_frac-zero_time_frac)*(self.true_sys_bp+self.zero_pressure) 
 								+ bag_time_frac * max(self.bag_pressure + self.zero_pressure,300) + zero_time_frac*self.zero_pressure)
 
 		self.observed_dia_bp= self.apparent_dia_bp+3*random.gauss(0,1)
-		self.observed_mean_bp=self.apparent_mean_pressure+random.gauss(0,1)
+		self.observed_mean_bp=self.apparent_mean_bp+random.gauss(0,1)
 		self.observed_sys_bp=self.apparent_sys_bp+3*random.gauss(0,1)
 
+
+		# print self.apparent_dia_bp, self.apparent_mean_bp, self.apparent_sys_bp
 
 		# self.true_dia_bp
 		# self.true_sys_bp
