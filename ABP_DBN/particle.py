@@ -93,16 +93,21 @@ class Particle:
 		else:
 			valve_state_continue_time=min(1,math.pow(math.e, 0.045 - 4.5*random.random()))
 
+		#if(math.abs(new_event_uniform_random)>valve_state_continue_time)
+			#new_EventStartoffset=abs(neweventuniformrandom)
+		#else
+		# 	newEventStartOffset=0
+
 		new_valve_event = 1
 		if valve_state_continue_time==1:
 			new_valve_event=0
-		elif ((math.fabs(new_event_random) < valve_state_continue_time) and (new_event_random < 0)):
+		elif ((math.fabs(new_event_random) > valve_state_continue_time) and (new_event_random < 0)):
 			new_valve_event=2
 		elif (math.fabs(new_event_random) > valve_state_continue_time):
 			new_valve_event=3
 
 
-		new_event_initial_length=.1*.3*random.random()	
+		new_event_initial_length=.1+.3*random.random()	
 		if new_valve_event==0 or new_valve_event==1:
 			new_event_initial_length=math.pow(10,-4)*random.gauss(0,1)
 
