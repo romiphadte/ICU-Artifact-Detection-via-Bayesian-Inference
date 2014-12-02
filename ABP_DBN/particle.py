@@ -5,7 +5,7 @@ import math
 import copy
 import pdb
 
-SENSIBLE_SIMULATION=True
+SENSIBLE_SIMULATION=False
 
 class Particle:
 	def __init__(self):
@@ -80,11 +80,11 @@ class Particle:
 		new_event_random=0
 		if new_event_random_num<=0:
 			# print "first"
-			new_event_random=new_event_random
+			new_event_random=new_event_random_num
 
 		elif new_event_random_num<8:
 			# print "second"
-			new_event_random=new_event_random/8
+			new_event_random=new_event_random_num/8
 
 		self.starting_valve_state=self.ending_valve_state
 
@@ -97,12 +97,13 @@ class Particle:
 			#new_EventStartoffset=abs(neweventuniformrandom)
 		#else
 		# 	newEventStartOffset=0
-		if abs(new_event_random) > valve_state_continue_time:
-			new_event_start_offset = abs(new_event_random)
+		if math.fabs(new_event_random) > valve_state_continue_time:
+			new_event_start_offset = math.fabs(new_event_random)
 		else:
 			new_event_start_offset = 0
 
 		new_valve_event = 1
+		# print new_event_random, valve_state_continue_time
 		if valve_state_continue_time==1:
 			new_valve_event=0
 		elif ((math.fabs(new_event_random) > valve_state_continue_time) and (new_event_random < 0)):
@@ -115,20 +116,25 @@ class Particle:
 		if new_valve_event==0 or new_valve_event==1:
 			new_event_initial_length=math.pow(10,-4)*random.gauss(0,1)
 
-
 		if new_valve_event==0:
+			# print 0
 			self.ending_valve_state=self.starting_valve_state
 		elif new_valve_event==1:
+			# print 0
 			self.ending_valve_state=0
 		elif (self.starting_valve_state + new_event_initial_length)>1:
+			# print new_valve_event-1
+			print "HELLO"
 			self.ending_valve_state=new_valve_event-1
 		else:
+			# print 0
 			self.ending_valve_state=0
 
 		x=0
 		y=0
 
 		if(self.starting_valve_state==2):
+			print "2"
 			x = valve_state_continue_time
 		else:
 			x = 0
@@ -159,6 +165,7 @@ class Particle:
 		zero_time_frac=calc
 		if calc<.03:
 			zero_time_frac=0
+
 		# print(self.bag_pressure, (1 - bag_time_frac-zero_time_frac)*(self.true_dia_bp+self.zero_pressure) 
 		# 						+ bag_time_frac * max(self.bag_pressure + self.zero_pressure,300) + zero_time_frac*self.zero_pressure)
 		self.apparent_dia_bp=min(self.bag_pressure, (1 - bag_time_frac-zero_time_frac)*(self.true_dia_bp+self.zero_pressure) 
