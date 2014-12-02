@@ -69,7 +69,7 @@ class Particle:
 		bag_pressure_random= 200*random.random()
 
 		if bag_pressure_random<=1:
-			print "Random bag event"
+			# print "Random bag event"
 			self.bag_pressure= 250+30*random.gauss(0,1)
 		else:
 			self.bag_pressure=0.999*self.bag_pressure
@@ -79,11 +79,11 @@ class Particle:
 		
 		new_event_random=0
 		if new_event_random_num<=0:
-			print "first"
+			# print "first"
 			new_event_random=new_event_random
 
 		elif new_event_random_num<8:
-			print "second"
+			# print "second"
 			new_event_random=new_event_random/8
 
 		self.starting_valve_state=self.ending_valve_state
@@ -97,6 +97,10 @@ class Particle:
 			#new_EventStartoffset=abs(neweventuniformrandom)
 		#else
 		# 	newEventStartOffset=0
+		if abs(new_event_random) > valve_state_continue_time:
+			new_event_start_offset = abs(new_event_random)
+		else:
+			new_event_start_offset = 0
 
 		new_valve_event = 1
 		if valve_state_continue_time==1:
@@ -120,6 +124,9 @@ class Particle:
 			self.ending_valve_state=new_valve_event-1
 		else:
 			self.ending_valve_state=0
+
+		x=0
+		y=0
 
 		if(self.starting_valve_state==2):
 			x = valve_state_continue_time
