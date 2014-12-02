@@ -3,8 +3,9 @@ import util
 import random
 import math 
 import copy
+import pdb
 
-SENSIBLE_SIMULATION=False
+SENSIBLE_SIMULATION=True
 
 class Particle:
 	def __init__(self):
@@ -66,7 +67,9 @@ class Particle:
 		self.true_sys_bp=self.true_mean_bp + (self.true_pulse_bp*(1-self.true_sys_fract))
 
 		bag_pressure_random= 200*random.random()
+
 		if bag_pressure_random<=1:
+			print "Random bag event"
 			self.bag_pressure= 250+30*random.gauss(0,1)
 		else:
 			self.bag_pressure=0.999*self.bag_pressure
@@ -75,10 +78,12 @@ class Particle:
 		new_event_random_num=180*random.random()-1
 		
 		new_event_random=0
-		if new_event_random_num<0:
+		if new_event_random_num<=0:
+			print "first"
 			new_event_random=new_event_random
 
 		elif new_event_random_num<8:
+			print "second"
 			new_event_random=new_event_random/8
 
 		self.starting_valve_state=self.ending_valve_state
@@ -107,7 +112,7 @@ class Particle:
 		elif new_valve_event==1:
 			self.ending_valve_state=0
 		elif (self.starting_valve_state + new_event_initial_length)>1:
-			self.ending_valve_state+new_valve_event-1
+			self.ending_valve_state=new_valve_event-1
 		else:
 			self.ending_valve_state=0
 
