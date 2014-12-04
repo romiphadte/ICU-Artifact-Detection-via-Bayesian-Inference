@@ -6,7 +6,7 @@ T=31;   % 30 min worth data traces
 N=8000;  % number of particles
 x = zeros(19,N,T);
 
-y=load('dataset5.txt');
+y=load('dataset7.txt');
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
 obs_dia  = y(:,3);
@@ -47,6 +47,8 @@ DiaBP_mean=mean(x(4,:,:),2); DiaBP_mean = DiaBP_mean(:);
 MeanBP_mean=mean(x(2,:,:),2); MeanBP_mean = MeanBP_mean(:);
 SysBP_mean=mean(x(5,:,:),2); SysBP_mean = SysBP_mean(:);
 bagPressure_mean=mean(x(7,:,:),2); bagPressure_mean = bagPressure_mean(:);
+bagBelief_mean=sum(x(12,:,:)==3)/N; bagBelief_mean = bagBelief_mean(:);
+zeroBelief_mean=sum(x(12,:,:)==2)/N; zeroBelief_mean = zeroBelief_mean(:);
 
 DiaBP_std = std(x(4,:,:),1,2); DiaBP_std = DiaBP_std(:);
 MeanBP_std= std(x(2,:,:),1,2); MeanBP_std = MeanBP_std(:);
@@ -65,6 +67,8 @@ plot(0:T-1,obs_sys,'r','LineWidth',2);
 plot(0:T-1,DiaBP_mean,'b')
 plot(0:T-1,MeanBP_mean,'b')
 plot(0:T-1,SysBP_mean,'b')
+plot(0:T-1,10*bagBelief_mean,'k','LineWidth',2)
+plot(0:T-1,10*zeroBelief_mean,'g','LineWidth',2)
 ylim([0 300]);
 xlim([0 30])
 xlabel('minutes')
