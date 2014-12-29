@@ -2,7 +2,7 @@ clear
 close all
 clc
 %% 1-minute model parameters
-T=300;
+T=100000;
 sensibleSimulation=1; % randomness is needed in inference for particles not to collapse
 % however for sensible simulation results, here we are fixing trueMeanBP,
 % truePulseBP and trueSysFrac to constant values
@@ -124,18 +124,21 @@ for t=2:T;
     trueMeanBP(t) = trueMeanBP(t-1) + 6*randn();             % eq 2
     trueSystolicFraction(t) = trueSystolicFraction(t-1) +0.01*randn();          % eq 3
     if(sensibleSimulation)
-       truePulseBP(t) = truePulseBP(t-1);
-       trueMeanBP(t) = trueMeanBP(t-1);
-       trueSystolicFraction(t) = trueSystolicFraction(t-1);
+        truePulseBP(t) = truePulseBP(t-1);
+        trueMeanBP(t) = trueMeanBP(t-1);
+        trueSystolicFraction(t) = trueSystolicFraction(t-1);
     end
     trueDiaBP(t) =  trueMeanBP(t) - truePulseBP(t)*trueSystolicFraction(t);     % eq 4
     trueSysBP(t) =  trueMeanBP(t) + truePulseBP(t)*(1-trueSystolicFraction(t)); % eq 5
     zeroPressure(t) = 0;    % eq 6
     r=randi(200,1,1);
     if(r==1)    % eq 7
-        bagPressure(t) = 250 + 30*randn();  
+        bagPressure(t) = 250 + 30*randn();
     else
         bagPressure(t) = 0.999*bagPressure(t-1);
+    end
+    if(sensibleSimulation)
+        bagPressure(t)=bagPressure(t-1);
     end
     r = 180*rand()-1;                   % eq 8
     if(r<0)
@@ -252,8 +255,9 @@ plot(1:T,trueDiaBP,'LineWidth',2)
 hold on
 plot(1:T,trueMeanBP,'LineWidth',2)
 plot(1:T,trueSysBP,'LineWidth',2)
+plot(1:T,bagPressure,'g')
 hold off
-legend('Dia','Mean','Sys')
+legend('Dia','Mean','Sys','Bag')
 title('ground truth')
 linkaxes([h1,h2,h3],'x')
 
