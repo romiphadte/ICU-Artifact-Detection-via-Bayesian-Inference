@@ -3,13 +3,14 @@ close all
 clc
 % a simple model to explain bag-pressure artifact in 1 second resolution
 %%
-T=1000;
+T=6000000;
 s=zeros(T,1);
 x=zeros(T,1);
+d =zeros(T,1);
 apparent=zeros(T,1);
 baselevel=100;
 bagpressure=230;
-alpha=.01;  % corresponds to time constant 100
+alpha=1/(39.3241*60); 
 beta=.001;  % corresponds to time constant 1000
 T0=100;     % you should stick to state 0 for at least 100 time steps
 T1=10;      % you should stick to state 1 for at least 10 time steps
@@ -23,22 +24,17 @@ x(t)=0;
 apparent(t)=baselevel;
 %%
 for t=2:T;
-    if(s(t-1)==0 && x(t-1)<=T0)
-        s(t)=s(t-1);
-        x(t)=x(t-1)+1;
-    elseif(s(t-1)==0 && x(t-1)>T0)
-        if(rand()<exp(-alpha*(x(t-1)-T0) ))
+    if(s(t-1)==0)
+        if(rand()<exp(-alpha*(x(t-1))))
             s(t)=s(t-1);
             x(t)=x(t-1)+1;
         else
+            d(t)=1;
             s(t)=1;
             x(t)=0;
         end
-    elseif(s(t-1)==1 && x(t-1)<=T1)
-        s(t)=s(t-1);
-        x(t)=x(t-1)+1;
     else
-        if(rand()<exp(-beta*(x(t-1)-T1) ))
+        if(rand()<exp(-((((x(t-1))/60)+0.0005)/0.3931)^2)) 
             s(t)=s(t-1);
             x(t)=x(t-1)+1;
         else
