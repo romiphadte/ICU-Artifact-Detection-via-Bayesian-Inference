@@ -3,10 +3,11 @@ close all
 clc
 % a simple model to explain bag-pressure artifact in 1 second resolution
 %%
-T=6000000;
+T=60000;
 s=zeros(T,1);
 x=zeros(T,1);
 d =zeros(T,1);
+p = zeros(T,1);
 apparent=zeros(T,1);
 baselevel=100;
 bagpressure=230;
@@ -25,7 +26,7 @@ apparent(t)=baselevel;
 %%
 for t=2:T;
     if(s(t-1)==0)
-        if(rand()<exp(-alpha*(x(t-1))))
+         if(-5e7*(log(rand())) - 20000  > x(t-1))
             s(t)=s(t-1);
             x(t)=x(t-1)+1;
         else
@@ -34,11 +35,12 @@ for t=2:T;
             x(t)=0;
         end
     else
-        if(rand()<exp(-((((x(t-1))/60)+0.0005)/0.3931)^2)) 
+        if( sqrt(-30000*log(rand())) -40 > (x(t-1)) ) 
             s(t)=s(t-1);
             x(t)=x(t-1)+1;
         else
             s(t)=0;
+            p(t) = x(t-1)+1;
             x(t)=0;
         end
     end
