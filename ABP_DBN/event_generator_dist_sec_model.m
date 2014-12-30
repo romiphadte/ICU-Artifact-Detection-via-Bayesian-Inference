@@ -8,13 +8,12 @@ s=zeros(T,1);
 x=zeros(T,1);
 d =zeros(T,1);
 p = zeros(T,1);
+z = zeros(T,1);
+dz = zeros(T,1);
 apparent=zeros(T,1);
 baselevel=100;
 bagpressure=230;
-alpha=1/(39.3241*60); 
-beta=.001;  % corresponds to time constant 1000
-T0=100;     % you should stick to state 0 for at least 100 time steps
-T1=10;      % you should stick to state 1 for at least 10 time steps
+zeropressure = 0;
 tau=5;      % time constant for apparent pressure, apparent does not jump to
             % bag-pressure immediately, but climbs in a smooth 1st order
             % fashion. (think about an RC circuit)
@@ -29,12 +28,18 @@ for t=2:T;
          if(-5e7*(log(rand())) - 20000  > x(t-1))
             s(t)=s(t-1);
             x(t)=x(t-1)+1;
-        else
-            d(t)=1;
-            s(t)=1;
-            x(t)=0;
-        end
-    else
+         else
+            if (rand()*9 < 1)
+                z(t)=1;
+                s(t)=-1;
+                x(t)=0;
+            else
+                d(t)=1;
+                s(t)=1;
+                x(t)=0;
+            end
+         end
+    elseif(s(t-1) == 1)
         if( sqrt(-30000*log(rand())) -40 > (x(t-1)) ) 
             s(t)=s(t-1);
             x(t)=x(t-1)+1;
@@ -43,8 +48,26 @@ for t=2:T;
             p(t) = x(t-1)+1;
             x(t)=0;
         end
+    else % put in zero case NEED TO EDIT values to make it match
+        if( sqrt(-30000*log(rand())) -40 > (x(t-1)) ) 
+            s(t)=s(t-1);
+            x(t)=x(t-1)+1;
+        else
+            s(t)=0;
+            dz(t) = x(t-1)+1;
+            x(t)=0;
+        end
     end
-    apparent(t)=1/(tau+1)*(tau*apparent(t-1)+(1-s(t))*baselevel+s(t)*bagpressure );
+    
+    if (s(t) == 0)
+        newPot = baselevel;
+    elseif (s(t) == 1)
+        newPot = bagpressure;
+    else
+        newPot = zeropressure;
+    end
+%     apparent(t)=1/(tau+1)*(tau*apparent(t-1)+ (1-s(t))*baselevel+s(t)*bagpressure );
+    apparent(t)=1/(tau+1)*(tau*apparent(t-1)+ newPot );
 end
 %%
 h=figure; h_zoom = zoom(h);
