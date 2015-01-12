@@ -2,7 +2,7 @@ clear
 close all
 clc
 %% 1-minute model parameters
-T=100000;
+T=1000;
 sensibleSimulation=1; % randomness is needed in inference for particles not to collapse
 % however for sensible simulation results, here we are fixing trueMeanBP,
 % truePulseBP and trueSysFrac to constant values

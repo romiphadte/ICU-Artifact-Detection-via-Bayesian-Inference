@@ -1,5 +1,6 @@
-function timeInState_next = abp_prob(x_curr)
-sensibleSimulation = 1;
+function x_next = abp_prob(x_curr)
+x_next = zeros(13,1);
+sensibleSimulation = 0;
 truePulseBP_curr= x_curr(1); 
 trueMeanBP_curr = x_curr(2); 
 trueSystolicFraction_curr = x_curr(3);
@@ -19,10 +20,10 @@ tau1 = 30;   % time constant for apparent pressure, apparent does not jump to
             % fashion. 
 tau2 = 5;
 
-truePulseBP_next = truePulseBP_curr + (3/60)*randn(); %% were these originally 3 and 6?
-trueMeanBP_next = trueMeanBP_curr + (6/60)*randn();
+truePulseBP_next = truePulseBP_curr + (10*3/60)*randn(); %% were these originally 3 and 6?
+trueMeanBP_next = trueMeanBP_curr + (10*6/60)*randn();
 zeroPressure_next = zeroPressure_curr;
-trueSystolicFraction_next = trueSystolicFraction_curr + (0.01/60)*randn(); 
+trueSystolicFraction_next = trueSystolicFraction_curr + (10*0.01/60)*randn(); 
     
 if(sensibleSimulation)
     truePulseBP_next = truePulseBP_curr;

@@ -4,7 +4,7 @@ clc
 
 % a simple model to explain bag-pressure artifact in 1 second resolution
 %%
-sensibleSimulation = 1;
+sensibleSimulation = 0;
 T = 60000;
 s = zeros(T,1);
 x = zeros(T,1);
@@ -147,6 +147,7 @@ for t=2:T;
     else
         tau = tau2;
     end  
+    
     apparentMeanBP(t)=1/(tau+1)*(tau*apparentMeanBP(t-1)+ newPotM );
     apparentSysBP(t)=1/(tau+1)*(tau*apparentSysBP(t-1)+ newPotS );
     apparentDiaBP(t)=1/(tau+1)*(tau*apparentDiaBP(t-1)+ newPotD );

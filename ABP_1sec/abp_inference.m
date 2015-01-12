@@ -38,8 +38,16 @@ for t=2:T;
     w3 = normpdf(obs_sys(t),x(10,:,t),3);
     w = w1.*w2.*w3;
     ind = randp(w,N,1); % resampling indices
+    if (sum(w) == 0)
+    break;
+    disp('ehlp');
+        disp(t);
+    else
+       x(:,:,t) = x(:,ind,t);
+    end
+    
+
     % ind = sysresample(w/sum(w));
-    x(:,:,t) = x(:,ind,t);
 end
 
 %% mean and std of related quantities

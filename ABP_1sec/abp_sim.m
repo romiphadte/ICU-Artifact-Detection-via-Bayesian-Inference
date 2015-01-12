@@ -2,7 +2,7 @@ clear
 close all
 clc
 %%
-T=300;
+T=30000;
 x = zeros(13,T);
 x(:,1) = abp_prior();
 for t=2:T;
