@@ -2,14 +2,15 @@ clear
 close all
 clc
 %%
-T=31;   % 30 min worth data traces
 N=8000;  % number of particles
-x = zeros(13,N,T);
+y=load('dataset2.txt');
 
-y=load('dataset7.txt');
+
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
 obs_dia  = y(:,3);
+T = size(y,1);
+x = zeros(13,N,T);
 
 %% Initialize
 t=1;
@@ -78,7 +79,7 @@ plot(0:T-1,SysBP_mean,'b')
 plot(0:T-1,10*bagBelief_mean,'k','LineWidth',2)
 plot(0:T-1,10*zeroBelief_mean,'g','LineWidth',2)
 ylim([0 300]);
-xlim([0 30])
+xlim([0 T])
 xlabel('minutes')
 ylabel('mmHg')
 hold off

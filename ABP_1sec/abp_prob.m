@@ -20,10 +20,10 @@ tau1 = 30;   % time constant for apparent pressure, apparent does not jump to
             % fashion. 
 tau2 = 5;
 
-truePulseBP_next = truePulseBP_curr + (10*3/60)*randn(); %% were these originally 3 and 6?
-trueMeanBP_next = trueMeanBP_curr + (10*6/60)*randn();
+truePulseBP_next = truePulseBP_curr + (3/60)*randn(); %% were these originally 3 and 6?
+trueMeanBP_next = trueMeanBP_curr + (6/60)*randn();
 zeroPressure_next = zeroPressure_curr;
-trueSystolicFraction_next = trueSystolicFraction_curr + (10*0.01/60)*randn(); 
+trueSystolicFraction_next = trueSystolicFraction_curr + (0.01/60)*randn(); 
     
 if(sensibleSimulation)
     truePulseBP_next = truePulseBP_curr;
@@ -78,11 +78,11 @@ else % put in zero case NEED TO EDIT values to make it match
     end
 end
     
-if (s_curr == 0)
+if (s_next == 0)
     newPotM = trueMeanBP_next;
     newPotS = trueSysBP_next;
     newPotD = trueDiaBP_next;
-elseif (s_curr == 1)
+elseif (s_next == 1)
     newPotM = bagPressure_next;
     newPotS = bagPressure_next;
     newPotD = bagPressure_next;
@@ -91,16 +91,14 @@ else
     newPotS = zeroPressure_next;
     newPotD = zeroPressure_next;
 end
-
-if (prevState_next == 0)
+if (s_next ~= 0)
     tau = tau1;
 else
     tau = tau2;
-end  
+end
 apparentMeanBP_next=1/(tau+1)*(tau*apparentMeanBP_curr+ newPotM );
 apparentSysBP_next=1/(tau+1)*(tau*apparentSysBP_curr+ newPotS );
 apparentDiaBP_next=1/(tau+1)*(tau*apparentDiaBP_curr+ newPotD );
-
 x_next(1)=truePulseBP_next;
 x_next(2)=trueMeanBP_next;
 x_next(3)=trueSystolicFraction_next;
