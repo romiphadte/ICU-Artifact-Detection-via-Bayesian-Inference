@@ -5,13 +5,13 @@ clc
 % a simple model to explain bag-pressure artifact in 1 second resolution
 %%
 sensibleSimulation = 1;
-T = 600000;
+T = 6000;
 s = zeros(T,1);  % State
 x = zeros(T,1);  % Time
-d = zeros(T,1);  % bag event
-p = zeros(T,1);  % duration of a bag event
-z = zeros(T,1);  % zero event
-dz = zeros(T,1); % duration of zero event
+betweenBagEvents = zeros(T,1);  % bag event
+durationBag = zeros(T,1);  % duration of a bag event
+betweenZeroEvents = zeros(T,1);  % zero event
+durationZero = zeros(T,1); % duration of zero event
 truePulseBP = zeros(T,1);
 trueMeanBP = zeros(T,1);
 bagPressure = zeros(T,1);
@@ -97,11 +97,11 @@ for t=2:T;
         else
             prevState = 0;
             if (rand()*9 < 1)
-                z(t)=1;
+                betweenZeroEvents(t)=1;
                 s(t)=-1;
                 x(t)=0;
             else
-                d(t)=1;
+                betweenBagEvents(t)=1;
                 s(t)=1;
                 x(t)=0;
             end
@@ -113,7 +113,7 @@ for t=2:T;
         else
             prevState = 1;
             s(t)=0;
-            p(t) = x(t-1)+1;
+            durationBag(t) = x(t-1)+1;
             x(t)=0;
         end
     else % put in zero case NEED TO EDIT values to make it match
@@ -123,7 +123,7 @@ for t=2:T;
         else
             prevState = -1;
             s(t)=0;
-            dz(t) = x(t-1)+1;
+            durationZero(t) = x(t-1)+1;
             x(t)=0;
         end
     end

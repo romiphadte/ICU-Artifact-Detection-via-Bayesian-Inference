@@ -1,6 +1,6 @@
 function x_next = abp_prob(x_curr)
 x_next = zeros(13,1);
-sensibleSimulation = 0;
+sensibleSimulation = 1;
 truePulseBP_curr= x_curr(1); 
 trueMeanBP_curr = x_curr(2); 
 trueSystolicFraction_curr = x_curr(3);
@@ -25,11 +25,17 @@ trueMeanBP_next = trueMeanBP_curr + (6/60)*randn();
 zeroPressure_next = zeroPressure_curr;
 trueSystolicFraction_next = trueSystolicFraction_curr + (0.01/60)*randn(); 
     
+% if(sensibleSimulation)
+%     truePulseBP_next = truePulseBP_curr;
+%     trueMeanBP_next = trueMeanBP_curr;
+%     trueSystolicFraction_next = trueSystolicFraction_curr;
+% end
 if(sensibleSimulation)
-    truePulseBP_next = truePulseBP_curr;
-    trueMeanBP_next = trueMeanBP_curr;
-    trueSystolicFraction_next = trueSystolicFraction_curr;
+    truePulseBP_next = 0.005*(50+10*randn()) +0.995*truePulseBP_curr;   % magic numbers for noise. edit as desired. 
+    trueMeanBP_next = 0.005*(95+15*randn())+0.995*trueMeanBP_curr;
+    trueSystolicFraction_next = 0.01*(0.33+0.04*randn())+ 0.995*trueSystolicFraction_curr;
 end
+
 trueDiaBP_next =  trueMeanBP_next - truePulseBP_next*trueSystolicFraction_next;     % eq 4
 trueSysBP_next =  trueMeanBP_next + truePulseBP_next*(1-trueSystolicFraction_next); 
 r=randi(200*60,1,1);
