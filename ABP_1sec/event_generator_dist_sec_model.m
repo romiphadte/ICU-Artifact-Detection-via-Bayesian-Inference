@@ -4,14 +4,14 @@ clc
 
 % a simple model to explain bag-pressure artifact in 1 second resolution
 %%
-sensibleSimulation = 0;
-T = 60000;
-s = zeros(T,1);
-x = zeros(T,1);
-d = zeros(T,1);
-p = zeros(T,1);
-z = zeros(T,1);
-dz = zeros(T,1);
+sensibleSimulation = 1;
+T = 600000;
+s = zeros(T,1);  % State
+x = zeros(T,1);  % Time
+d = zeros(T,1);  % bag event
+p = zeros(T,1);  % duration of a bag event
+z = zeros(T,1);  % zero event
+dz = zeros(T,1); % duration of zero event
 truePulseBP = zeros(T,1);
 trueMeanBP = zeros(T,1);
 bagPressure = zeros(T,1);
@@ -76,9 +76,9 @@ for t=2:T;
     trueSystolicFraction(t) = trueSystolicFraction(t-1) + (0.01/60)*randn(); 
     
     if(sensibleSimulation)
-        truePulseBP(t) = truePulseBP(t-1);
-        trueMeanBP(t) = trueMeanBP(t-1);
-        trueSystolicFraction(t) = trueSystolicFraction(t-1);
+        truePulseBP(t) = 0.5*(truePulseBP(1)+10*randn())+0.5*truePulseBP(t-1);   % magic numbers for noise. edit as desired. 
+        trueMeanBP(t) = 0.5*(trueMeanBP(1)+10*randn())+0.3*trueMeanBP(t-1);
+        trueSystolicFraction(t) = 0.7*(trueSystolicFraction(1)+(.05/60)*randn())+0.3*trueSystolicFraction(t-1);
     end
     trueDiaBP(t) =  trueMeanBP(t) - truePulseBP(t)*trueSystolicFraction(t);     % eq 4
     trueSysBP(t) =  trueMeanBP(t) + truePulseBP(t)*(1-trueSystolicFraction(t)); 
@@ -207,13 +207,13 @@ h1=subplot(1,2,1);
 plot(1:T,s,'LineWidth',2)
 h2=subplot(1,2,2);
 hold on
-plot(1:T,bagPressure,'r','LineWidth',1)
-plot(1:T,apparentMeanBP,'LineWidth',2)
-plot(1:T,apparentSysBP,'LineWidth',2)
-plot(1:T,apparentDiaBP,'LineWidth',2)
-plot(1:T,secondMeanBP, 'y', 'LineWidth', 3)
-plot(1:T,secondSysBP,'y', 'LineWidth', 3)
-plot(1:T,secondDiaBP,'y', 'LineWidth', 3)
+plot(1:T,bagPressure,'k','LineWidth',1)
+plot(1:T,apparentMeanBP,'c' ,'LineWidth',2)
+plot(1:T,apparentSysBP,'c' ,'LineWidth',2)
+plot(1:T,apparentDiaBP,'c' ,'LineWidth',2)
+plot(1:T,secondMeanBP, 'b', 'LineWidth', 3)
+plot(1:T,secondSysBP,'b', 'LineWidth', 3)
+plot(1:T,secondDiaBP,'b', 'LineWidth', 3)
 
 hold off
 legend('bag pressure','apparentMeanBP','apparentSysBP','apparentDiaBP', 'secondMeanBP')
