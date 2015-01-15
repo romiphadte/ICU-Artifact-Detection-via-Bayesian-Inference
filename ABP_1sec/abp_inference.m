@@ -2,6 +2,8 @@ clear
 close all
 clc
 %%
+gcp();
+tic();
 N=8000;  % number of particles
 y=load('dataset1.txt');
 
@@ -13,7 +15,7 @@ x = zeros(13,N,T);
 
 %% Initialize
 t=1;
-for i=1:N;
+parfor i=1:N;
     x(:,i,t) = abp_prior();
 end
 % weight
@@ -29,8 +31,9 @@ x(:,:,t) = x(:,ind,t);
 reverseStr = [];
 for t=2:T;
     reverseStr = displayprogress(t/T*100,reverseStr);
-    for i=1:N;
-        x(:,i,t) = abp_prob(x(:,i,t-1));
+    temp = x(:,:,t-1);
+    parfor i=1:N;
+        x(:,i,t) = abp_prob(temp(:,i));
     end
     % weight
     w1 = normpdf(obs_dia(t),x(8,:,t),3);
@@ -63,6 +66,7 @@ MeanBP_std= std(x(2,:,:),1,2); MeanBP_std = MeanBP_std(:);
 SysBP_std = std(x(5,:,:),1,2); SysBP_std = SysBP_std(:);
 bagPressure_std=std(x(7,:,:),1,2); bagPressure_std = bagPressure_std(:);
 %%
+toc()
 figure;
 hold on;
 shadedErrorBar(0:T-1,bagPressure_mean,bagPressure_std);
