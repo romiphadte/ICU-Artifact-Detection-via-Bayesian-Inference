@@ -3,8 +3,7 @@ close all
 clc
 %%
 N=8000;  % number of particles
-y=load('dataset2.txt');
-
+y=load('dataset1.txt');
 
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
