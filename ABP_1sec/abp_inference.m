@@ -11,7 +11,7 @@ obs_mean = y(:,1);
 obs_sys  = y(:,2);
 obs_dia  = y(:,3);
 T = size(y,1);
-x = zeros(13,N,T);
+x = zeros(14,N,T);
 
 %% Initialize
 t=1;
@@ -36,15 +36,16 @@ for t=2:T;
         x(:,i,t) = abp_prob(temp(:,i));
     end
     % weight
-    w1 = normpdf(obs_dia(t),x(8,:,t),3);
-    w2 = normpdf(obs_mean(t),x(9,:,t),1);
-    w3 = normpdf(obs_sys(t),x(10,:,t),3);
-    w = w1.*w2.*w3;
+      
+            w1 = normpdf(obs_dia(t),x(8,:,t),3);
+            w2 = normpdf(obs_mean(t),x(9,:,t),1);
+            w3 = normpdf(obs_sys(t),x(10,:,t),3);
+        
+        w = w1.*w2.*w3;
+    
     ind = randp(w,N,1); % resampling indices
     if (sum(w) == 0)
-    break;
-    disp('ehlp');
-        disp(t);
+       break;
     else
        x(:,:,t) = x(:,ind,t);
     end

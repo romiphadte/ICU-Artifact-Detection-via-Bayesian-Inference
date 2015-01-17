@@ -1,5 +1,5 @@
 function x_next = abp_prob(x_curr)
-x_next = zeros(13,1);
+x_next = zeros(14,1);
 sensibleSimulation = 0;
 truePulseBP_curr= x_curr(1); 
 trueMeanBP_curr = x_curr(2); 
@@ -14,7 +14,7 @@ apparentSysBP_curr = x_curr(10);
 prevState_curr = x_curr(11);
 timeInState_curr = x_curr(12);
 s_curr = x_curr(13);
-
+timeLastBagChange_curr = x_curr(14);
 tau1 = 30;   % time constant for apparent pressure, apparent does not jump to
             % bag-pressure immediately, but climbs in a smooth 1st order
             % fashion. 
@@ -48,6 +48,18 @@ if(r==1)    % eq 7
 else
     bagPressure_next = (1-(0.001)/60)*bagPressure_curr;
 end
+
+r=-3.5e8*(log(rand())) - 22000;
+if(timeLastBagChange_curr > r)    % eq 7
+    bagPressure_next = 250 + 30*randn();  
+    timeLastBagChange_next = 0;
+else
+    bagPressure_next = (1-(0.001)/60)*bagPressure_curr;
+    timeLastBagChange_next = timeLastBagChange_curr + 1;
+end
+
+
+
 prevState_next = prevState_curr;
 if(s_curr==0)
     if(-5e7*(log(rand())) - 20000  > timeInState_curr)
@@ -121,4 +133,5 @@ x_next(10)=apparentSysBP_next;
 x_next(11)= prevState_next;
 x_next(12)=timeInState_next;
 x_next(13)=s_next;
+x_next(14)=timeLastBagChange_next;
 

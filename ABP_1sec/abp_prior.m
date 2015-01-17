@@ -1,6 +1,6 @@
 function x_prior = abp_prior()
 
-x_prior=zeros(13,1);
+x_prior=zeros(14,1);
 
 prevState = 0;
 truePulseBP = 50 + 10*randn();
@@ -31,7 +31,7 @@ else
     apparentDiaBP = trueDiaBP;
 
 end
-    
+timeLastBagChange = 0;
 timeInState = 0;
 
  x_prior(1)=truePulseBP; 
@@ -47,3 +47,4 @@ timeInState = 0;
  x_prior(11)=prevState;
  x_prior(12)=timeInState;
  x_prior(13)=s;
+ x_prior(14)=timeLastBagChange;
