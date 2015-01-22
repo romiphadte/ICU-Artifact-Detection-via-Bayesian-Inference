@@ -10,6 +10,11 @@ y=load('dataset1.txt');
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
 obs_dia  = y(:,3);
+true_mean = y(:,4);
+true_sys = y(:,5);
+true_dia = y(:,6);
+true_bag = y(:,7);
+
 T = size(y,1);
 x = zeros(14,N,T);
 
@@ -79,6 +84,10 @@ set(gca,'XTickLabel',[0:T/60]);
 plot(0:T-1,obs_dia,'r','LineWidth',2);
 plot(0:T-1,obs_mean,'r','LineWidth',2);
 plot(0:T-1,obs_sys,'r','LineWidth',2);
+plot(0:T-1,true_dia,'k','LineWidth',2);
+plot(0:T-1,true_mean,'k','LineWidth',2);
+plot(0:T-1,true_sys,'k','LineWidth',2);
+plot(0:T-1,true_bag,'k','LineWidth',2);
 plot(0:T-1,DiaBP_mean,'b')
 plot(0:T-1,MeanBP_mean,'b')
 plot(0:T-1,SysBP_mean,'b')

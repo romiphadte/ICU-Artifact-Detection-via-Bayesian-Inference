@@ -1,6 +1,6 @@
 function x_next = abp_prob(x_curr)
 x_next = zeros(14,1);
-sensibleSimulation = 0;
+sensibleSimulation = 1;
 truePulseBP_curr= x_curr(1); 
 trueMeanBP_curr = x_curr(2); 
 trueSystolicFraction_curr = x_curr(3);
