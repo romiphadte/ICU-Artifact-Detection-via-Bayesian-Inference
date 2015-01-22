@@ -2,10 +2,10 @@ clear
 close all
 clc
 %%
-% gcp();
+gcp();
 tic();
-N=80;  % number of particles
-y=load('dataset1.txt');
+N=8000;  % number of particles
+y=load('secondData.txt');
 
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
@@ -20,7 +20,7 @@ x = zeros(14,N,T);
 
 %% Initialize
 t=1;
-for i=1:N;
+parfor i=1:N;
     x(:,i,t) = abp_prior();
 end
 % weight
@@ -37,7 +37,7 @@ reverseStr = [];
 for t=2:T;
     reverseStr = displayprogress(t/T*100,reverseStr);
     temp = x(:,:,t-1);
-    for i=1:N;
+    parfor i=1:N;
         x(:,i,t) = abp_prob(temp(:,i));
     end
     % weight
