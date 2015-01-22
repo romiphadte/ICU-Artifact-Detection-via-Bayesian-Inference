@@ -2,9 +2,9 @@ clear
 close all
 clc
 %%
-gcp();
+% gcp();
 tic();
-N=8000;  % number of particles
+N=80;  % number of particles
 y=load('dataset1.txt');
 
 obs_mean = y(:,1);
@@ -15,7 +15,7 @@ x = zeros(14,N,T);
 
 %% Initialize
 t=1;
-parfor i=1:N;
+for i=1:N;
     x(:,i,t) = abp_prior();
 end
 % weight
@@ -32,7 +32,7 @@ reverseStr = [];
 for t=2:T;
     reverseStr = displayprogress(t/T*100,reverseStr);
     temp = x(:,:,t-1);
-    parfor i=1:N;
+    for i=1:N;
         x(:,i,t) = abp_prob(temp(:,i));
     end
     % weight
@@ -74,6 +74,8 @@ shadedErrorBar(0:T-1,bagPressure_mean,bagPressure_std);
 shadedErrorBar(0:T-1,DiaBP_mean,DiaBP_std,'m');
 shadedErrorBar(0:T-1,MeanBP_mean,MeanBP_std,'m');
 shadedErrorBar(0:T-1,SysBP_mean,SysBP_std,'m');
+set(gca,'XTick',[0:60:T]);
+set(gca,'XTickLabel',[0:T/60]);
 plot(0:T-1,obs_dia,'r','LineWidth',2);
 plot(0:T-1,obs_mean,'r','LineWidth',2);
 plot(0:T-1,obs_sys,'r','LineWidth',2);
