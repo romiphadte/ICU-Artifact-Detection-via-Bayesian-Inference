@@ -5,7 +5,7 @@ clc
 gcp();
 tic();
 N=8000;  % number of particles
-y=load('dataset1.txt');
+y=load('secondData.txt');
 
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
@@ -96,7 +96,3 @@ xlim([0 T])
 xlabel('minutes')
 ylabel('mmHg')
 hold off
-
-
-
-
