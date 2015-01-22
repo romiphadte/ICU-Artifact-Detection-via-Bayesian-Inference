@@ -10,6 +10,11 @@ y=load('dataset1.txt');
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
 obs_dia  = y(:,3);
+true_mean = y(:,4);
+true_sys = y(:,5);
+true_dia = y(:,6);
+true_bag = y(:,7);
+
 T = size(y,1);
 x = zeros(14,N,T);
 
