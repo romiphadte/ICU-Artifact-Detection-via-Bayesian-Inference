@@ -82,6 +82,10 @@ shadedErrorBar(0:T-1,SysBP_mean,SysBP_std,'m');
 plot(0:T-1,obs_dia,'r','LineWidth',2);
 plot(0:T-1,obs_mean,'r','LineWidth',2);
 plot(0:T-1,obs_sys,'r','LineWidth',2);
+plot(0:T-1,true_dia,'k','LineWidth',2);
+plot(0:T-1,true_mean,'k','LineWidth',2);
+plot(0:T-1,true_sys,'k','LineWidth',2);
+plot(0:T-1,true_bag,'k','LineWidth',2);
 plot(0:T-1,DiaBP_mean,'b')
 plot(0:T-1,MeanBP_mean,'b')
 plot(0:T-1,SysBP_mean,'b')
