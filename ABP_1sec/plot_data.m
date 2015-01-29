@@ -1,7 +1,7 @@
 clear
 close all
 clc
-T = 80000;
+T = 1000;
 y=load('secondData.txt');
 
 obs_mean = y(:,1);
@@ -22,7 +22,8 @@ true_bag_min = zeros(1,floor(T/60)+1);
 i=1;
 mins = (T/60)-1;
 for t=1: mins;
-    i = t * 60;
+    disp(t);
+    i = (t-1) * 60 +1;
     obs_mean_min(t) = sum(obs_mean(i:i+60))/60;
     obs_sys_min(t) = sum(obs_sys(i:i+60))/60;
     obs_dia_min(t) = sum(obs_dia(i:i+60))/60;
@@ -41,7 +42,7 @@ plot(0:T-1,true_mean,'g','LineWidth',2);
 plot(0:T-1,true_sys,'g','LineWidth',2);
 plot(0:T-1,true_bag,'g','LineWidth',2);
 
-V = 0:60:T;
+V = 30:60:T;
 
 plot(V,obs_dia_min,'b','LineWidth',2);
 plot(V,obs_mean_min,'b','LineWidth',2);
