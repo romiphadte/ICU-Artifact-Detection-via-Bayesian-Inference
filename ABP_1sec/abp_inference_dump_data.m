@@ -4,7 +4,7 @@ clc
 %%
 gcp();
 tic();
-N=8000;  % number of particles
+N=50000;  % number of particles
 y=load('secondData.txt');
 
 T = size(y,1);
