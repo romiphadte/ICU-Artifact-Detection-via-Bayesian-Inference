@@ -2,14 +2,22 @@ clear
 close all
 clc
 %%
-T=31;   % 30 min worth data traces
+start =floor(29350/60)-25;
+last =floor(29400/60)+25;
+T=last-start+1;   % 30 min worth data traces
 N=8000;  % number of particles
 x = zeros(19,N,T);
 
-y=load('dataset7.txt');
+y=load('minuteData.txt');
+y=y(start:last,:);
+
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
 obs_dia  = y(:,3);
+true_mean = y(:,4);
+true_sys = y(:,5);
+true_dia = y(:,6);
+true_bag = y(:,7);
 
 %% Initialize
 t=1;
@@ -64,17 +72,18 @@ shadedErrorBar(0:T-1,SysBP_mean,SysBP_std,'m');
 plot(0:T-1,obs_dia,'r','LineWidth',2);
 plot(0:T-1,obs_mean,'r','LineWidth',2);
 plot(0:T-1,obs_sys,'r','LineWidth',2);
-plot(0:T-1,DiaBP_mean,'b')
-plot(0:T-1,MeanBP_mean,'b')
-plot(0:T-1,SysBP_mean,'b')
-plot(0:T-1,10*bagBelief_mean,'k','LineWidth',2)
-plot(0:T-1,10*zeroBelief_mean,'g','LineWidth',2)
+plot(0:T-1,true_dia,'k','LineWidth',2);
+plot(0:T-1,true_mean,'k','LineWidth',2);
+plot(0:T-1,true_sys,'k','LineWidth',2);
+plot(0:T-1,true_bag,'k','LineWidth',2);
+plot(0:T-1,DiaBP_mean,'b');
+plot(0:T-1,MeanBP_mean,'b');
+plot(0:T-1,SysBP_mean,'b');
+plot(0:T-1,100*bagBelief_mean,'k','LineWidth',2);
+plot(0:T-1,100*zeroBelief_mean,'g','LineWidth',2);
 ylim([0 300]);
-xlim([0 30])
-xlabel('minutes')
-ylabel('mmHg')
+xlim([0 T]);
+xlabel('minutes');
+ylabel('mmHg');
 hold off
-
-
-
 

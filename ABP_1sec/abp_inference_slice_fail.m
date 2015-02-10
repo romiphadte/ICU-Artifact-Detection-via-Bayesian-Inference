@@ -7,11 +7,15 @@ clc
 gcp();
 tic();
 N=8000;  % number of particles
-y=load('dataset2.txt');
+y=load('secondData.txt');
 
 obs_mean = y(:,1);
 obs_sys  = y(:,2);
 obs_dia  = y(:,3);
+true_mean = y(:,4);
+true_sys = y(:,5);
+true_dia = y(:,6);
+true_bag = y(:,7);
 T = size(y,1);
 % x = zeros(14,N,T);
 currState =  zeros(14,N);

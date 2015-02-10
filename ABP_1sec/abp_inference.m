@@ -4,8 +4,9 @@ clc
 %%
 gcp();
 tic();
-N=8000;  % number of particles
-y=load('secondData.txt');
+N=20000;  % number of particles
+y=load('secondData80k.txt');
+y=y(24700:25200,:);
 
 obs_mean = y(:,1);
 obs_sys  = y(:,2);

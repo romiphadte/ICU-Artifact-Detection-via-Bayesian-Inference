@@ -1,7 +1,7 @@
 clear
 close all
 clc
-T = 1000;
+T = 80000;
 y=load('secondData.txt');
 
 obs_mean = y(:,1);

@@ -1,6 +1,6 @@
 function x_next = abp_prob(x_curr)
 x_next = zeros(14,1);
-sensibleSimulation = 1;
+sensibleSimulation = 0;
 truePulseBP_curr= x_curr(1); 
 trueMeanBP_curr = x_curr(2); 
 trueSystolicFraction_curr = x_curr(3);
@@ -24,7 +24,7 @@ truePulseBP_next = truePulseBP_curr + (3/10)*randn(); %% were these originally 3
 trueMeanBP_next = trueMeanBP_curr + (6/10)*randn();
 zeroPressure_next = zeroPressure_curr;
 trueSystolicFraction_next = trueSystolicFraction_curr + (0.01/10)*randn(); 
-    
+
 % if(sensibleSimulation)
 %     truePulseBP_next = truePulseBP_curr;
 %     trueMeanBP_next = trueMeanBP_curr;
@@ -46,7 +46,7 @@ r=randi(200*60,1,1);
 if(r==1)    % eq 7
     bagPressure_next = 250 + 30*randn();  
 else
-    bagPressure_next = (1-(0.001)/60)*bagPressure_curr;
+    bagPressure_next = ((1-(0.001)/60)*bagPressure_curr)+(1*randn());
 end
 
 r=-3.5e8*(log(rand())) - 22000;
