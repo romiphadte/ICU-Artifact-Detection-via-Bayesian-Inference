@@ -4,12 +4,10 @@ clc
 %%
 gcp();
 tic();
-N=20000;  % number of particles
-y=load('secondData80k.txt');
-y=y(24700:25200,:);
+N=50000;  % number of particles
+y=load('secondData.txt');
 
 T = size(y,1);
-
 obs_mean = y(1:T,1);
 obs_sys  = y(1:T,2);
 obs_dia  = y(1:T,3);
@@ -113,33 +111,34 @@ end
 % bagPressure_std=std(x(7,:,:),1,2); bagPressure_std = bagPressure_std(:);
 %%
 toc()
-figure;
-hold on;
-shadedErrorBar(0:T-1,bagPressure_mean,bagPressure_std);
-shadedErrorBar(0:T-1,DiaBP_mean,DiaBP_std,'m');
-shadedErrorBar(0:T-1,MeanBP_mean,MeanBP_std,'m');
-shadedErrorBar(0:T-1,SysBP_mean,SysBP_std,'m');
-plot(0:T-1,DiaBP_mean,'b')
-plot(0:T-1,MeanBP_mean,'b')
-plot(0:T-1,SysBP_mean,'b')
-plot(0:T-1,10*bagBelief_mean,'k','LineWidth',2)
-plot(0:T-1,10*zeroBelief_mean,'g','LineWidth',2)
-
-set(gca,'XTick',[0:60:T]);
-set(gca,'XTickLabel',[0:T/60]);
-plot(0:T-1,obs_dia,'r','LineWidth',2);
-plot(0:T-1,obs_mean,'r','LineWidth',2);
-plot(0:T-1,obs_sys,'r','LineWidth',2);
-plot(0:T-1,true_dia,'k','LineWidth',2);
-plot(0:T-1,true_mean,'k','LineWidth',2);
-plot(0:T-1,true_sys,'k','LineWidth',2);
-plot(0:T-1,true_bag,'k','LineWidth',2);
-ylim([0 300]);
-xlim([0 T])
-xlabel('minutes')
-ylabel('mmHg')
-hold off
-
-
-
-
+save('secondData.mat');
+% figure;
+% hold on;
+% shadedErrorBar(0:T-1,bagPressure_mean,bagPressure_std);
+% shadedErrorBar(0:T-1,DiaBP_mean,DiaBP_std,'m');
+% shadedErrorBar(0:T-1,MeanBP_mean,MeanBP_std,'m');
+% shadedErrorBar(0:T-1,SysBP_mean,SysBP_std,'m');
+% plot(0:T-1,DiaBP_mean,'b')
+% plot(0:T-1,MeanBP_mean,'b')
+% plot(0:T-1,SysBP_mean,'b')
+% plot(0:T-1,10*bagBelief_mean,'k','LineWidth',2)
+% plot(0:T-1,10*zeroBelief_mean,'g','LineWidth',2)
+% 
+% set(gca,'XTick',[0:60:T]);
+% set(gca,'XTickLabel',[0:T/60]);
+% plot(0:T-1,obs_dia,'r','LineWidth',2);
+% plot(0:T-1,obs_mean,'r','LineWidth',2);
+% plot(0:T-1,obs_sys,'r','LineWidth',2);
+% plot(0:T-1,true_dia,'k','LineWidth',2);
+% plot(0:T-1,true_mean,'k','LineWidth',2);
+% plot(0:T-1,true_sys,'k','LineWidth',2);
+% plot(0:T-1,true_bag,'k','LineWidth',2);
+% ylim([0 300]);
+% xlim([0 T])
+% xlabel('minutes')
+% ylabel('mmHg')
+% hold off
+% 
+% 
+% 
+% 
