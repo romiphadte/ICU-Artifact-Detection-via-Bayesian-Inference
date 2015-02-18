@@ -2,7 +2,7 @@ clear
 close all
 clc
 %%
-T=80000;
+T=8000;
 x = zeros(14,T);
 x(:,1) = abp_prior();
 for t=2:T;
@@ -27,6 +27,10 @@ true_mean_min = zeros(1,floor(T/60)-1);
 true_sys_min = zeros(1,floor(T/60)-1);
 true_dia_min = zeros(1,floor(T/60)-1);
 true_bag_min = zeros(1,floor(T/60)-1);
+bag_event_truth_min = zeros(1,floor(T/60)-1);
+zero_event_truth_min = zeros(1,floor(T/60)-1);
+bag_event_truth_sec = x(13,:)==1;
+zero_event_truth_sec = x(13,:)==-1;
 i=1;
 mins = (T/60)-1;
 for t=1: mins;
@@ -38,9 +42,12 @@ for t=1: mins;
     true_sys_min(t) = sum(x(5,(i:i+60)))/60;
     true_dia_min(t) = sum(x(4,(i:i+60)))/60;
     true_bag_min(t) = sum(x(7,(i:i+60)))/60;
+    bag_event_truth_min(t) = any(bag_event_truth_sec(i:i+60));
+    zero_event_truth_min(t) = any(zero_event_truth_sec(i:i+60));
 end
 
-minuteData = dataset(obs_mean_min.',obs_sys_min.',obs_dia_min.',true_mean_min.',true_sys_min.',true_dia_min.',true_bag_min.');
+
+minuteData = dataset(obs_mean_min.',obs_sys_min.',obs_dia_min.',true_mean_min.',true_sys_min.',true_dia_min.',true_bag_min.', bag_event_truth_min.', zero_event_truth_min.');
 export(minuteData);
-secondData = dataset(obs_mean.',obs_sys.',obs_dia.',x(2,:).',x(5,:).',x(4,:).',x(7,:).');
+secondData = dataset(obs_mean.',obs_sys.',obs_dia.',x(2,:).',x(5,:).',x(4,:).',x(7,:).', bag_event_truth_sec.', zero_event_truth_sec.');
 export(secondData);
