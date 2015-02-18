@@ -4,9 +4,9 @@ clc
 %%
 gcp();
 tic();
-N=20000;  % number of particles
-y=load('secondData80k.txt');
-y=y(24700:25200,:);
+N=2000;  % number of particles
+y=load('secondData.txt');
+y=y(1:200,:);
 
 T = size(y,1);
 
@@ -17,6 +17,8 @@ true_mean = y(1:T,4);
 true_sys = y(1:T,5);
 true_dia = y(1:T,6);
 true_bag = y(1:T,7);
+bag_event_bool = y(1:T,8);
+zero_event_bool = y(1:T,9);
 
 
 DiaBP_mean=zeros(T,1);
@@ -30,7 +32,6 @@ DiaBP_std = zeros(T,1);
 MeanBP_std= zeros(T,1);
 SysBP_std = zeros(T,1);
 bagPressure_std=zeros(T,1);
-
 
 
 
@@ -99,6 +100,14 @@ for t=2:T;
     % ind = sysresample(w/sum(w));
 end
 
+bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))
+zeroError= zero_event_bool(:).*(zero_event_bool(:) - bagBelief_mean(:))
+
+disp(sum(zeroError))
+disp(sum(bagError))
+
+
+
 %% mean and std of related quantities
 % DiaBP_mean=mean(x(4,:,:),2); DiaBP_mean = DiaBP_mean(:);
 % MeanBP_mean=mean(x(2,:,:),2); MeanBP_mean = MeanBP_mean(:);
@@ -134,6 +143,8 @@ plot(0:T-1,true_dia,'k','LineWidth',2);
 plot(0:T-1,true_mean,'k','LineWidth',2);
 plot(0:T-1,true_sys,'k','LineWidth',2);
 plot(0:T-1,true_bag,'k','LineWidth',2);
+plot(0:T-1,bag_event_bool,'b','LineWidth',2);
+plot(0:T-1,zero_event_bool,'b','LineWidth',2);
 ylim([0 300]);
 xlim([0 T])
 xlabel('minutes')
