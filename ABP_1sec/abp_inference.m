@@ -2,11 +2,11 @@ clear
 close all
 clc
 %%
-gcp();
 tic();
 N=2000;  % number of particles
 y=load('secondData.txt');
-y=y(1:200,:);
+%%y=y(24700:25200,:);
+
 
 T = size(y,1);
 
@@ -39,7 +39,7 @@ x = zeros(14,N);
 
 %% Initialize
 t=1;
-parfor i=1:N;
+for i=1:N;
     x(:,i) = abp_prior();
 end
 
@@ -68,22 +68,13 @@ bagPressure_std(t)=std(x(7,:));
 reverseStr = [];
 for t=2:T;
     reverseStr = displayprogress(t/T*100,reverseStr);
-    temp = x(:,:);
-    parfor i=1:N;
-        x(:,i) = abp_prob(temp(:,i));
-    end
-    % weight
-        w1 = normpdf(obs_dia(t),x(8,:),3);
-        w2 = normpdf(obs_mean(t),x(9,:),1);
-        w3 = normpdf(obs_sys(t),x(10,:),3);
-        w = w1.*w2.*w3;
-    
+    x = abp_prob(x);
+    w1 = normpdf(obs_dia(t),x(8,:),3);
+    w2 = normpdf(obs_mean(t),x(9,:),1);
+    w3 = normpdf(obs_sys(t),x(10,:),3);
+    w = w1.*w2.*w3;
     ind = randp(w,N,1); % resampling indices
-    if (sum(w) == 0)
-       break;
-    else
-       x(:,:) = x(:,ind);
-    end
+    x(:,:) = x(:,ind);
     DiaBP_mean(t)=mean(x(4,:));
     MeanBP_mean(t)=mean(x(2,:));
     SysBP_mean(t)=mean(x(5,:));
@@ -100,10 +91,10 @@ for t=2:T;
     % ind = sysresample(w/sum(w));
 end
 
-bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))
+bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))./
 zeroError= zero_event_bool(:).*(zero_event_bool(:) - bagBelief_mean(:))
 
-disp(sum(zeroError))
+disp(sum(zeroError)/)
 disp(sum(bagError))
 
 
