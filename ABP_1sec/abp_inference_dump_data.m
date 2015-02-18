@@ -102,6 +102,8 @@ end
 % SysBP_std = std(x(5,:,:),1,2); SysBP_std = SysBP_std(:);
 % bagPressure_std=std(x(7,:,:),1,2); bagPressure_std = bagPressure_std(:);
 %%
+bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))./sum(bag_event_bool(:));
+zeroError= zero_event_bool(:).*(zero_event_bool(:) - bagBelief_mean(:))./sum(zero_event_bool(:));
 toc()
 save('secondData.mat');
 % figure;
