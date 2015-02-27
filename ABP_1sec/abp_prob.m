@@ -23,6 +23,9 @@ gotoZeroTau = 1;
 backtonormalTau = 5;
 clogTau = .5;
 
+tau_zero_drop=1;
+
+
 truePulseBP_next = truePulseBP_curr + (3/10)*randn(1,particles); %% were these originally 3 and 6?
 trueMeanBP_next = trueMeanBP_curr + (6/10)*randn(1,particles);
 zeroPressure_next = zeroPressure_curr;
