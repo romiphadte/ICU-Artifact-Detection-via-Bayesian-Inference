@@ -1,7 +1,7 @@
 function x_next = abp_prob(x_curr)
 particles = size(x_curr,2);
 x_next = zeros(14,particles);
-sensibleSimulation = 0;
+sensibleSimulation = 1;
 truePulseBP_curr= x_curr(1,:); 
 trueMeanBP_curr = x_curr(2,:); 
 trueSystolicFraction_curr = x_curr(3,:);
@@ -20,6 +20,9 @@ tau1 = 30;   % time constant for apparent pressure, apparent does not jump to
             % bag-pressure immediately, but climbs in a smooth 1st order
             % fashion. 
 tau2 = 5;
+
+tau_zero_drop=1;
+
 
 truePulseBP_next = truePulseBP_curr + (3/10)*randn(1,particles); %% were these originally 3 and 6?
 trueMeanBP_next = trueMeanBP_curr + (6/10)*randn(1,particles);
@@ -135,7 +138,7 @@ newPotD = norm_next.*trueDiaBP_next + bag_next.*bagPressure_next + zero_next.*ze
 %     newPotD = zeroPressure_next;
 % end
 
-tau = (s_next ~= 0)*tau1 + (s_next == 0)*tau2;
+tau = (s_next == 1)*tau1 + (s_next == 0)*tau2 + tau_zero_drop*(s_next == -1);
 
 % if (s_next ~= 0)
 %     tau = tau1;
