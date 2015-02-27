@@ -91,10 +91,12 @@ for t=2:T;
     % ind = sysresample(w/sum(w));
 end
 
-bagError= bag_event_bool(:).*((bag_event_bool(:) - bagBelief_mean(:)))./sum(bag_event_bool(:));
-zeroError= zero_event_bool(:).*(zero_event_bool(:) - zeroBelief_mean(:))./sum(zero_event_bool(:));
 
+bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))./sum(bag_event_bool(:))
+zeroError= zero_event_bool(:).*(zero_event_bool(:) - bagBelief_mean(:))./sum(zero_event_bool(:))
+disp('Zero Error is')
 disp(sum(zeroError))
+disp('Bag Error is')
 disp(sum(bagError))
 
 
