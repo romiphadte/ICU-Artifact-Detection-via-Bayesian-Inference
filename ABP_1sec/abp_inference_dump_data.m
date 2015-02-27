@@ -3,9 +3,8 @@ close all
 clc
 %%
 tic();
-N=50000;  % number of particles
+N=20000;  % number of particles
 y=load('secondData.txt');
-y=y(1:500,:);
 T = size(y,1);
 obs_mean = y(1:T,1);
 obs_sys  = y(1:T,2);
@@ -14,6 +13,8 @@ true_mean = y(1:T,4);
 true_sys = y(1:T,5);
 true_dia = y(1:T,6);
 true_bag = y(1:T,7);
+bag_event_bool = y(1:T,8);
+zero_event_bool = y(1:T,9);
 
 
 DiaBP_mean=zeros(T,1);

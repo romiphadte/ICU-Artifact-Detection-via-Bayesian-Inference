@@ -91,8 +91,8 @@ for t=2:T;
     % ind = sysresample(w/sum(w));
 end
 
-bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))./sum(bag_event_bool(:))
-zeroError= zero_event_bool(:).*(zero_event_bool(:) - bagBelief_mean(:))./sum(zero_event_bool(:))
+bagError= bag_event_bool(:).*((bag_event_bool(:) - bagBelief_mean(:)))./sum(bag_event_bool(:));
+zeroError= zero_event_bool(:).*(zero_event_bool(:) - zeroBelief_mean(:))./sum(zero_event_bool(:));
 
 disp(sum(zeroError))
 disp(sum(bagError))
@@ -115,31 +115,33 @@ disp(sum(bagError))
 toc()
 figure;
 hold on;
-shadedErrorBar(0:T-1,bagPressure_mean,bagPressure_std);
+% shadedErrorBar(0:T-1,bagPressure_mean,bagPressure_std);
+
+plot(0:T-1,20*bagBelief_mean,'k','LineWidth',2)
+plot(0:T-1,20*zeroBelief_mean,'g','LineWidth',2)
+% 
+% set(gca,'XTick',[0:60:T]);
+% set(gca,'XTickLabel',[0:T/60]);
+plot(0:T-1,obs_dia,'r','LineWidth',2);
+plot(0:T-1,obs_mean,'r','LineWidth',2);
+plot(0:T-1,obs_sys,'r','LineWidth',2);
 shadedErrorBar(0:T-1,DiaBP_mean,DiaBP_std,'m');
 shadedErrorBar(0:T-1,MeanBP_mean,MeanBP_std,'m');
 shadedErrorBar(0:T-1,SysBP_mean,SysBP_std,'m');
 plot(0:T-1,DiaBP_mean,'b')
 plot(0:T-1,MeanBP_mean,'b')
 plot(0:T-1,SysBP_mean,'b')
-plot(0:T-1,10*bagBelief_mean,'k','LineWidth',2)
-plot(0:T-1,10*zeroBelief_mean,'g','LineWidth',2)
-
-set(gca,'XTick',[0:60:T]);
-set(gca,'XTickLabel',[0:T/60]);
-plot(0:T-1,obs_dia,'r','LineWidth',2);
-plot(0:T-1,obs_mean,'r','LineWidth',2);
-plot(0:T-1,obs_sys,'r','LineWidth',2);
 plot(0:T-1,true_dia,'k','LineWidth',2);
 plot(0:T-1,true_mean,'k','LineWidth',2);
 plot(0:T-1,true_sys,'k','LineWidth',2);
-plot(0:T-1,true_bag,'k','LineWidth',2);
-plot(0:T-1,bag_event_bool,'b','LineWidth',2);
-plot(0:T-1,zero_event_bool,'b','LineWidth',2);
+% plot(0:T-1,true_bag,'k','LineWidth',2);
+plot(0:T-1,10*bag_event_bool,'r','LineWidth',2);
+plot(0:T-1,10*zero_event_bool,'y','LineWidth',2);
 ylim([0 300]);
 xlim([0 T])
 xlabel('minutes')
 ylabel('mmHg')
+legend('sin(x)','cos(x)')
 hold off
 
 

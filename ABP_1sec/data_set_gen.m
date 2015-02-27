@@ -12,14 +12,14 @@ obs_dia = x(8,:) + 0.5*randn(1,T);
 obs_mean = x(9,:) + 0.5*randn(1,T);
 obs_sys = x(10,:) + 0.5*randn(1,T);
 %%
-% figure;
-% plot(x(8:10,:)');
-% hold on;
-% plot(obs_dia);
-% plot(obs_mean);
-% plot(obs_sys);
-% hold off;
-% legend('dia','mean','sys')
+figure;
+plot(x(8:10,:)');
+hold on;
+plot(obs_dia);
+plot(obs_mean);
+plot(obs_sys);
+hold off;
+legend('dia','mean','sys')
 obs_mean_min = zeros(1,floor(T/60)-1);
 obs_sys_min = zeros(1,floor(T/60)-1);
 obs_dia_min = zeros(1,floor(T/60)-1);
