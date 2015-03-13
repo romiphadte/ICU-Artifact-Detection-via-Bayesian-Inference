@@ -2,24 +2,48 @@ clear
 close all
 clc
 %%
+real_data=true;
+
 tic();
 N=2000;  % number of particles
-y=load('secondData.txt');
+if real_data
+	y=matfile('ABP_real_data.mat')
+else
+	y=load('secondData.txt');
+end
 %%y=y(24700:25200,:);
 
 
-T = size(y,1);
+if real_data
+	s = 131500;
+	e = 132500;
+	T = e-s;
+else
+	T = size(y,1);
+end
 
-obs_mean = y(1:T,1);
-obs_sys  = y(1:T,2);
-obs_dia  = y(1:T,3);
-true_mean = y(1:T,4);
-true_sys = y(1:T,5);
-true_dia = y(1:T,6);
-true_bag = y(1:T,7);
-bag_event_bool = y(1:T,8);
-zero_event_bool = y(1:T,9);
 
+if real_data
+	true_mean= zeros(T,1);
+	true_sys = zeros(T,1);
+	true_dia = zeros(T,1);
+	true_bag = zeros(T,1);
+	obs_mean = y.Mean(1,s:e);
+	obs_sys = y.Syst(1,s:e);
+	obs_dia = y.Dias(1,s:e);
+	bag_event_bool = zeros(T,1);
+	zero_event_bool = zeros(T,1);
+else
+	obs_mean = y(1:T,1);
+	obs_sys  = y(1:T,2);
+	obs_dia  = y(1:T,3);
+	true_mean = y(1:T,4);
+	true_sys = y(1:T,5);
+	true_dia = y(1:T,6);
+	true_bag = y(1:T,7);
+	bag_event_bool = y(1:T,8);
+	zero_event_bool = y(1:T,9);
+end
 
 DiaBP_mean=zeros(T,1);
 MeanBP_mean=zeros(T,1);
