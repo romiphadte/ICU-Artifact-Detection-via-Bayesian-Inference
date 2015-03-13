@@ -5,9 +5,9 @@ clc
 real_data=true;
 
 tic();
-N=2000;  % number of particles
+N=2000000;  % number of particles
 if real_data
-	y=matfile('ABP_real_data.mat')
+	load('ABP_real_data.mat');
 else
 	y=load('secondData.txt');
 end
@@ -15,9 +15,9 @@ end
 
 
 if real_data
-	s = 131500;
-	e = 132500;
-	T = e-s;
+	s = find(time == 290200);
+	e = s + 12000;
+	T = e-s+1;
 else
 	T = size(y,1);
 end
@@ -28,9 +28,9 @@ if real_data
 	true_sys = zeros(T,1);
 	true_dia = zeros(T,1);
 	true_bag = zeros(T,1);
-	obs_mean = y.Mean(1,s:e);
-	obs_sys = y.Syst(1,s:e);
-	obs_dia = y.Dias(1,s:e);
+	obs_mean = Mean(1,s:e);
+	obs_sys = Syst(1,s:e);
+	obs_dia = Dias(1,s:e);
 	bag_event_bool = zeros(T,1);
 	zero_event_bool = zeros(T,1);
 else
@@ -72,6 +72,7 @@ w1 = normpdf(obs_dia(t),x(8,:),3);
 w2 = normpdf(obs_mean(t),x(9,:),1);
 w3 = normpdf(obs_sys(t),x(10,:),3);
 w = w1.*w2.*w3;
+
 ind = randp(w,N,1); % resampling indices
 % ind = sysresample(w/sum(w));
 x(:,:) = x(:,ind);
@@ -97,6 +98,10 @@ for t=2:T;
     w2 = normpdf(obs_mean(t),x(9,:),1);
     w3 = normpdf(obs_sys(t),x(10,:),3);
     w = w1.*w2.*w3;
+    if (sum(w) == 0)
+        disp(t)
+        break;
+    end
     ind = randp(w,N,1); % resampling indices
     x(:,:) = x(:,ind);
     DiaBP_mean(t)=mean(x(4,:));
@@ -116,12 +121,12 @@ for t=2:T;
 end
 
 
-bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))./sum(bag_event_bool(:))
-zeroError= zero_event_bool(:).*(zero_event_bool(:) - bagBelief_mean(:))./sum(zero_event_bool(:))
-disp('Zero Error is')
-disp(sum(zeroError))
-disp('Bag Error is')
-disp(sum(bagError))
+% bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))./sum(bag_event_bool(:))
+% zeroError= zero_event_bool(:).*(zero_event_bool(:) - bagBelief_mean(:))./sum(zero_event_bool(:))
+% % disp('Zero Error is')
+% % disp(sum(zeroError))
+% % disp('Bag Error is')
+% % disp(sum(bagError))
 
 
 
@@ -161,13 +166,13 @@ plot(0:T-1,true_dia,'k','LineWidth',2);
 plot(0:T-1,true_mean,'k','LineWidth',2);
 plot(0:T-1,true_sys,'k','LineWidth',2);
 % plot(0:T-1,true_bag,'k','LineWidth',2);
-plot(0:T-1,10*bag_event_bool,'r','LineWidth',2);
-plot(0:T-1,10*zero_event_bool,'y','LineWidth',2);
+% plot(0:T-1,10*bag_event_bool,'r','LineWidth',2);
+% plot(0:T-1,10*zero_event_bool,'y','LineWidth',2);
 ylim([0 300]);
 xlim([0 T])
 xlabel('minutes')
 ylabel('mmHg')
-legend('sin(x)','cos(x)')
+% legend('sin(x)','cos(x)')
 hold off
 
 
