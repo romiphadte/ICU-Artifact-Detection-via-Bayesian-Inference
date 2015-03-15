@@ -7,7 +7,7 @@ clc
 % 1-sec model (fs = 1Hz)
 delT = 1; % 1-sec sampling period
 %% Injection
-T = 2000;
+T = 1000;
 % Input Signals
 Pa  = 100*ones(1,T);    % Arterial Blood Pressure
 Pvs = 6*ones(1,T);      % Constant Central Venous Pressure
@@ -19,7 +19,7 @@ Ro = 526.3; kE = 0.11; tau = 20; G = 1.5;
 visualize(delT,Pic,Pc,q,Ca)
 
 %% Plateau Waves
-T = 5000;
+T = 2000;
 % Input Signals
 Pa  = 100*ones(1,T);    % Arterial Blood Pressure
 Pvs = 6*ones(1,T);      % Constant Central Venous Pressure
@@ -56,3 +56,17 @@ subplot(1,2,2);
 plot(ABPs,Vas)
 xlabel('Arterial Blood Pressure (mmHg)')
 ylabel('Arteriolar Blood Volume (ml)')
+
+%% Autoregulation Curve
+figure(12);
+hold on
+delCa1 = 0.75; delCa2 = 0.075; Can = 0.15;
+x = -2:0.001:2;
+delCa = (x<=0)*delCa1 + (x>0)*delCa2;
+k_sigma = delCa/4;
+sigma_Gx = ( (Can+delCa/2)+(Can-delCa/2).*exp(G*x./k_sigma) )./(1+exp(G*x./k_sigma));  
+plot(x,Can*ones(1,length(x)),'--r');
+temp = 0:0.001:(max(sigma_Gx)+0.003); plot(zeros(1,length(temp)),temp,'--r');
+plot(x,sigma_Gx,'b');
+xlabel('x = (q-qn)/qn'); ylabel('\sigma (Gx)')
+hold off
