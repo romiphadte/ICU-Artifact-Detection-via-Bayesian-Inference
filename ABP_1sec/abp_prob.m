@@ -1,7 +1,7 @@
 function x_next = abp_prob(x_curr)
 particles = size(x_curr,2);
 x_next = zeros(14,particles);
-sensibleSimulation = 1;
+sensibleSimulation = 0;
 truePulseBP_curr= x_curr(1,:); 
 trueMeanBP_curr = x_curr(2,:); 
 trueSystolicFraction_curr = x_curr(3,:);
@@ -71,7 +71,7 @@ randoms_bag_zero = (rands < 1);
 new_state = (-1*(randoms_bag_zero) + (rands < 9).*(1- randoms_bag_zero)) + 2*(rands >= 9);
 
 stay_in_nonzero = (sqrt(-30000*log(rand(1,particles))) -40 > (timeInState_curr));
-stay_in_clog = (sqrt(-3000000*log(rand(1,particles))) -4 > (timeInState_curr));
+stay_in_clog = (sqrt(-3000000*log(rand(1,particles))) + 900 > (timeInState_curr));
 
 new_bag_states = 1*bag_states.*(stay_in_nonzero);
 timeInState_next_bag = bag_states.*(stay_in_nonzero.*(timeInState_curr+1));

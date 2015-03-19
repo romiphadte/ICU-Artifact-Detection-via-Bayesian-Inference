@@ -5,7 +5,7 @@ clc
 real_data=true;
 
 tic();
-N=2000000;  % number of particles
+N=2000;  % number of particles
 if real_data
 	load('ABP_real_data.mat');
 else
@@ -15,8 +15,10 @@ end
 
 
 if real_data
-	s = find(time == 290200);
-	e = s + 12000;
+    n = find(time > 99200);
+	s = n(1);
+    n = find(time > 101500);
+	e = n(1);
 	T = e-s+1;
 else
 	T = size(y,1);
@@ -151,7 +153,8 @@ hold on;
 plot(0:T-1,20*bagBelief_mean,'k','LineWidth',2)
 plot(0:T-1,20*zeroBelief_mean,'g','LineWidth',2)
 % 
-% set(gca,'XTick',[0:60:T]);
+set(gca,'XTick',[0:60:T]);
+
 % set(gca,'XTickLabel',[0:T/60]);
 plot(0:T-1,obs_dia,'r','LineWidth',2);
 plot(0:T-1,obs_mean,'r','LineWidth',2);
@@ -169,8 +172,9 @@ plot(0:T-1,true_sys,'k','LineWidth',2);
 % plot(0:T-1,10*bag_event_bool,'r','LineWidth',2);
 % plot(0:T-1,10*zero_event_bool,'y','LineWidth',2);
 ylim([0 300]);
+ % set(gca,'XTick',[0:60:T]);
 xlim([0 T])
-xlabel('minutes')
+xlabel('seconds')
 ylabel('mmHg')
 % legend('sin(x)','cos(x)')
 hold off
