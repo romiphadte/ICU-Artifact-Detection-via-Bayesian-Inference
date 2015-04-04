@@ -26,15 +26,19 @@ Pvs = 6*ones(1,T);      % Constant Central Venous Pressure
 I   = zeros(1,T);       % Injection
 % Parameters
 Ro = 526.3*12; kE = 2.1*0.11; tau = 20; G = 1.5;
-[Pic,Pc,Ca,~,q] = ICPsimulator(delT,Pa,Pvs,I,Ro,kE,G,tau);
+[Pic,Pc,Ca,Va,q] = ICPsimulator(delT,Pa,Pvs,I,Ro,kE,G,tau);
 visualize(delT,Pic,Pc,q,Ca)
+figure(101);
+plot(Va,Pic)
+xlabel('Arteriolar Volume (ml)');
+ylabel('ICP (mmHg)');
 
 %% CBF vs SAP curve
 T = 5000;
-% Parameters
+% Parameter
 Ro = 526.3; kE = 0.11; tau = 20; G = 1.5;
 ABPs=10:200; L = length(ABPs);
-qs = zeros(1,L); Vas = zeros(1,L);
+qs = zeros(1,L); Vas = zeros(1,L); Pics = zeros(1,L); Pcs = zeros(1,L);
 reverseStr = [];
 for i=1:L;
     reverseStr = displayprogress(i/L*100,reverseStr);
@@ -45,13 +49,19 @@ for i=1:L;
     [Pic,Pc,Ca,Va,q] = ICPsimulator(delT,Pa,Pvs,I,Ro,kE,G,tau);
     qs(i) = q(end);
     Vas(i) = Va(end);
+    Pics(i) = Pic(end);
+    Pcs(i) = Pc(end);
 end
+fprintf('\n');
 h2=figure(11);
 set(h2,'Position',[100 100 1000 500]);
 subplot(1,2,1);
-plot(ABPs,qs)
+plot(ABPs,qs);
+hold on
+plot(ABPs,Pics,'r');
 xlabel('Arterial Blood Pressure (mmHg)')
 ylabel('Cerebral Blood Flow (ml/sec)')
+hold off
 subplot(1,2,2);
 plot(ABPs,Vas)
 xlabel('Arterial Blood Pressure (mmHg)')
