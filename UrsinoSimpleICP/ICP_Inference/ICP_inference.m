@@ -4,146 +4,114 @@ clc
 %%
 tic();
 N=2000;  % number of particles
-y=load('secondData.txt');
-%%y=y(24700:25200,:);
+% y=load('secondData.txt');
 
-
-T = size(y,1);
-
-obs_mean = y(1:T,1);
-obs_sys  = y(1:T,2);
-obs_dia  = y(1:T,3);
-true_mean = y(1:T,4);
-true_sys = y(1:T,5);
-true_dia = y(1:T,6);
-true_bag = y(1:T,7);
-bag_event_bool = y(1:T,8);
-zero_event_bool = y(1:T,9);
-
-
-DiaBP_mean=zeros(T,1);
-MeanBP_mean=zeros(T,1);
-SysBP_mean=zeros(T,1);
-bagPressure_mean=zeros(T,1);
-bagBelief_mean=zeros(T,1);
-zeroBelief_mean=zeros(T,1);
-
-DiaBP_std = zeros(T,1);
-MeanBP_std= zeros(T,1);
-SysBP_std = zeros(T,1);
-bagPressure_std=zeros(T,1);
+% T = size(y,1);
+T = 100;
+obs_ICP = 10*ones(1,T);
+true_abp = 100*ones(1,T);
+Ro = 526.3; kE = 0.11;  G = 1.5; tau = 20;
+pvs = 6*ones(1,T);
 
 
 
-x = zeros(14,N);
+Pic = zeros(1,T);       % Intracranial Pressure
+Pic_STD = zeros(1,T); 
+Pc  = zeros(1,T);       % Capillary Pressure
+Pc_STD  = zeros(1,T);
+Ca  = zeros(1,T);       % Arterial Compliance
+Ca_STD  = zeros(1,T);
+Va  = zeros(1,T);       % Arteriolar Blood Volume
+Va_STD  = zeros(1,T); 
+q   = zeros(1,T);       % Cerebral Blood Flow
+q_STD   = zeros(1,T);
+sigma_Gx = zeros(1,T);  % Autoregulation Equilibrium Compliance
+sigma_Gx_STD = zeros(1,T);
+
+I = zeros(1,T);         % Drainage event binary  
+I_belief = zeros(1,T);
+
+x = zeros(7,N);
 
 %% Initialize
 t=1;
 for i=1:N;
-    x(:,i) = abp_prior();
+    x(:,i) = ICP_prior(true_abp(t),G);
 end
-
 % weight
-w1 = normpdf(obs_dia(t),x(8,:),3);
-w2 = normpdf(obs_mean(t),x(9,:),1);
-w3 = normpdf(obs_sys(t),x(10,:),3);
-w = w1.*w2.*w3;
+w = normpdf(obs_ICP(t),x(1,:),1);
+
 ind = randp(w,N,1); % resampling indices
-% ind = sysresample(w/sum(w));
 x(:,:) = x(:,ind);
 
-DiaBP_mean(t)=mean(x(4,:));
-MeanBP_mean(t)=mean(x(2,:));
-SysBP_mean(t)=mean(x(5,:));
-bagPressure_mean(t)=mean(x(7,:));
-bagBelief_mean(t)=sum(x(13,:)==1)/N;
-zeroBelief_mean(t)=sum(x(13,:)==-1)/N;
+Pic(t) = mean(x(1,:));       % Intracranial Pressure
+Pic_STD(t) = std(x(1,:));
 
-DiaBP_std(t) = std(x(4,:));
-MeanBP_std(t)= std(x(2,:));
-SysBP_std(t) = std(x(5,:));
-bagPressure_std(t)=std(x(7,:));
+Pc(t)  = mean(x(2,:));       % Capillary Pressure
+Pc_STD(t)  = std(x(2,:));
 
+Ca(t)  = mean(x(3,:));       % Arterial Compliance
+Ca_STD(t)  = std(x(3,:));
+
+Va(t)  = mean(x(4,:));       % Arteriolar Blood Volume
+Va_STD(t)  = std(x(4,:));
+
+q(t)   = mean(x(5,:));       % Cerebral Blood Flow
+q_STD(t)   = std(x(5,:));
+
+sigma_Gx(t) = mean(x(6,:));  % Autoregulation Equilibrium Compliance
+sigma_Gx_STD(t) = std(x(6,:));
+
+I_belief(t) = sum(x(7,:))/N;
+
+return;
 %% Propagate - Weight - Resample
 reverseStr = [];
 for t=2:T;
     reverseStr = displayprogress(t/T*100,reverseStr);
-    x = abp_prob(x);
-    w1 = normpdf(obs_dia(t),x(8,:),3);
-    w2 = normpdf(obs_mean(t),x(9,:),1);
-    w3 = normpdf(obs_sys(t),x(10,:),3);
-    w = w1.*w2.*w3;
+    x = abp_prob(x,true_abp(t),pvt(t),true_abp(t-1),pvs(t-1),Ro,kE,G,tau);
+    w = normpdf(obs_ICP(t),x(1,:),1);
+
     ind = randp(w,N,1); % resampling indices
     x(:,:) = x(:,ind);
-    DiaBP_mean(t)=mean(x(4,:));
-    MeanBP_mean(t)=mean(x(2,:));
-    SysBP_mean(t)=mean(x(5,:));
-    bagPressure_mean(t)=mean(x(7,:));
-    bagBelief_mean(t)=sum(x(13,:)==1)/N;
-    zeroBelief_mean(t)=sum(x(13,:)==-1)/N;
 
-    DiaBP_std(t) = std(x(4,:));
-    MeanBP_std(t)= std(x(2,:));
-    SysBP_std(t) = std(x(5,:));
-    bagPressure_std(t)=std(x(7,:));
+    Pic(t) = mean(x(1,:));       % Intracranial Pressure
+    Pic_STD(t) = std(x(1,:));
+
+    Pc(t)  = mean(x(2,:));       % Capillary Pressure
+    Pc_STD(t)  = std(x(2,:));
+
+    Ca(t)  = mean(x(3,:));       % Arterial Compliance
+    Ca_STD(t)  = std(x(3,:));
+
+    Va(t)  = mean(x(4,:));       % Arteriolar Blood Volume
+    Va_STD(t)  = std(x(4,:));
+
+    q(t)   = mean(x(5,:));       % Cerebral Blood Flow
+    q_STD(t)   = std(x(5,:));
+
+    sigma_Gx(t) = mean(x(6,:));  % Autoregulation Equilibrium Compliance
+    sigma_Gx_STD(t) = std(x(6,:));
+
+    I_belief(t) = sum(x(7,:))/N;
 
 
-    % ind = sysresample(w/sum(w));
 end
 
-
-bagError= bag_event_bool(:).*(bag_event_bool(:) - bagBelief_mean(:))./sum(bag_event_bool(:))
-zeroError= zero_event_bool(:).*(zero_event_bool(:) - bagBelief_mean(:))./sum(zero_event_bool(:))
-disp('Zero Error is')
-disp(sum(zeroError))
-disp('Bag Error is')
-disp(sum(bagError))
-
-
-
-%% mean and std of related quantities
-% DiaBP_mean=mean(x(4,:,:),2); DiaBP_mean = DiaBP_mean(:);
-% MeanBP_mean=mean(x(2,:,:),2); MeanBP_mean = MeanBP_mean(:);
-% SysBP_mean=mean(x(5,:,:),2); SysBP_mean = SysBP_mean(:);
-% bagPressure_mean=mean(x(7,:,:),2); bagPressure_mean = bagPressure_mean(:);
-% bagBelief_mean=sum(x(13,:,:)==1)/N; bagBelief_mean = bagBelief_mean(:);
-% zeroBelief_mean=sum(x(13,:,:)==-1)/N; zeroBelief_mean = zeroBelief_mean(:);
-% 
-% DiaBP_std = std(x(4,:,:),1,2); DiaBP_std = DiaBP_std(:);
-% MeanBP_std= std(x(2,:,:),1,2); MeanBP_std = MeanBP_std(:);
-% SysBP_std = std(x(5,:,:),1,2); SysBP_std = SysBP_std(:);
-% bagPressure_std=std(x(7,:,:),1,2); bagPressure_std = bagPressure_std(:);
-%%
 toc()
 figure;
 hold on;
-% shadedErrorBar(0:T-1,bagPressure_mean,bagPressure_std);
-
-plot(0:T-1,20*bagBelief_mean,'k','LineWidth',2)
-plot(0:T-1,20*zeroBelief_mean,'g','LineWidth',2)
+plot(0:T-1,I_belief,'k','LineWidth',2)
 % 
-% set(gca,'XTick',[0:60:T]);
-% set(gca,'XTickLabel',[0:T/60]);
-plot(0:T-1,obs_dia,'r','LineWidth',2);
-plot(0:T-1,obs_mean,'r','LineWidth',2);
-plot(0:T-1,obs_sys,'r','LineWidth',2);
-shadedErrorBar(0:T-1,DiaBP_mean,DiaBP_std,'m');
-shadedErrorBar(0:T-1,MeanBP_mean,MeanBP_std,'m');
-shadedErrorBar(0:T-1,SysBP_mean,SysBP_std,'m');
-plot(0:T-1,DiaBP_mean,'b')
-plot(0:T-1,MeanBP_mean,'b')
-plot(0:T-1,SysBP_mean,'b')
-plot(0:T-1,true_dia,'k','LineWidth',2);
-plot(0:T-1,true_mean,'k','LineWidth',2);
-plot(0:T-1,true_sys,'k','LineWidth',2);
-% plot(0:T-1,true_bag,'k','LineWidth',2);
-plot(0:T-1,10*bag_event_bool,'r','LineWidth',2);
-plot(0:T-1,10*zero_event_bool,'y','LineWidth',2);
+set(gca,'XTick',[0:60:T]);
+set(gca,'XTickLabel',[0:T/60]);
+plot(0:T-1,obs_ICP,'r','LineWidth',2);
+shadedErrorBar(0:T-1,Pic,Pic_STD,'m');
+plot(0:T-1,Pic,'b')
 ylim([0 300]);
 xlim([0 T])
 xlabel('minutes')
 ylabel('mmHg')
-legend('sin(x)','cos(x)')
 hold off
 
 
