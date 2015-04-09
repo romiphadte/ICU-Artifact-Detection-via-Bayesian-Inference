@@ -1,4 +1,4 @@
-function x_prior = ICP_prior()
+function x_prior = ICP_prior(Pa,G)
 %function [Pic,Pc,Ca,Va,q] = ICPsimulator(delT,Pa,Pvs,I,Ro,kE,G,tau)
 x_prior=zeros(7,1);
 % Allocation

@@ -64,12 +64,11 @@ sigma_Gx_STD(t) = std(x(6,:));
 
 I_belief(t) = sum(x(7,:))/N;
 
-return;
 %% Propagate - Weight - Resample
 reverseStr = [];
 for t=2:T;
-    reverseStr = displayprogress(t/T*100,reverseStr);
-    x = abp_prob(x,true_abp(t),pvt(t),true_abp(t-1),pvs(t-1),Ro,kE,G,tau);
+%     reverseStr = displayprogress(t/T*100,reverseStr);
+    x = ICP_prob(x,true_abp(t),pvs(t),true_abp(t-1),pvs(t-1),Ro,kE,G,tau);
     w = normpdf(obs_ICP(t),x(1,:),1);
 
     ind = randp(w,N,1); % resampling indices
