@@ -19,7 +19,7 @@ kR = 4.91*1e4;
 qn = 12.5;
 
 % initialization
-Ca = Can;    % for DBN, should be initialized according to a prior
+Ca = Can + .1* randn();    % for DBN, should be initialized according to a prior
 Pic = 10 + 3*randn();   % for DBN, should be initialized according to a prior
 Va = Ca*(Pa - Pic);
 Ra = kR*Can^2/Va^2;
