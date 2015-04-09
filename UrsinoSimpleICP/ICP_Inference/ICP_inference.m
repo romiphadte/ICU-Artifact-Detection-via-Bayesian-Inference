@@ -3,13 +3,16 @@ close all
 clc
 %%
 tic();
-N=2000;  % number of particles
+N=20000;  % number of particles
 % y=load('secondData.txt');
-
+load('ICP_real_data.mat');
 % T = size(y,1);
-T = 100;
-obs_ICP = 10*ones(1,T);
-true_abp = 100*ones(1,T);
+duration = 1000;
+start = find(time==121000);
+stop  = start+duration;
+T = stop-start;
+obs_ICP = ICP_mean(start:stop);
+true_abp = 120*ones(1,T);
 Ro = 526.3; kE = 0.11;  G = 1.5; tau = 20;
 pvs = 6*ones(1,T);
 
@@ -67,10 +70,12 @@ I_belief(t) = sum(x(7,:))/N;
 %% Propagate - Weight - Resample
 reverseStr = [];
 for t=2:T;
-%     reverseStr = displayprogress(t/T*100,reverseStr);
+    reverseStr = displayprogress(t/T*100,reverseStr);
     x = ICP_prob(x,true_abp(t),pvs(t),true_abp(t-1),pvs(t-1),Ro,kE,G,tau);
     w = normpdf(obs_ICP(t),x(1,:),1);
-
+    if (sum(w) == 0);
+        break;
+    end
     ind = randp(w,N,1); % resampling indices
     x(:,:) = x(:,ind);
 
@@ -104,10 +109,11 @@ plot(0:T-1,I_belief,'k','LineWidth',2)
 % 
 set(gca,'XTick',[0:60:T]);
 set(gca,'XTickLabel',[0:T/60]);
-plot(0:T-1,obs_ICP,'r','LineWidth',2);
 shadedErrorBar(0:T-1,Pic,Pic_STD,'m');
 plot(0:T-1,Pic,'b')
-ylim([0 300]);
+plot(obs_ICP,'r','LineWidth',2);
+
+ylim([0 30]);
 xlim([0 T])
 xlabel('minutes')
 ylabel('mmHg')

@@ -11,7 +11,7 @@ kR = 4.91*1e4;
 qn = 12.5;
 delT = 1;
 
-I_same_state = 0.9999;
+I_same_state = 0.999;
 I_diff_State = 0.0001;
 drain_constant=-0.66;
 
