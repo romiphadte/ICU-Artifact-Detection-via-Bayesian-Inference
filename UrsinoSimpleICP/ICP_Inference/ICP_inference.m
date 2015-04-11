@@ -1,6 +1,5 @@
 clear
 close all
-clc
 %%
 tic();
 N=20000;  % number of particles
@@ -30,11 +29,12 @@ q   = zeros(1,T);       % Cerebral Blood Flow
 q_STD   = zeros(1,T);
 sigma_Gx = zeros(1,T);  % Autoregulation Equilibrium Compliance
 sigma_Gx_STD = zeros(1,T);
+app_ICP_MEAN = zeros(1,T);
 
 I = zeros(1,T);         % Drainage event binary  
 I_belief = zeros(1,T);
 
-x = zeros(7,N);
+x = zeros(8,N);
 
 %% Initialize
 t=1;
@@ -42,8 +42,7 @@ for i=1:N;
     x(:,i) = ICP_prior(true_abp(t),G);
 end
 % weight
-w = normpdf(obs_ICP(t),x(1,:),1);
-
+w = normpdf(obs_ICP(t),x(8,:),1);
 ind = randp(w,N,1); % resampling indices
 x(:,:) = x(:,ind);
 
@@ -65,14 +64,16 @@ q_STD(t)   = std(x(5,:));
 sigma_Gx(t) = mean(x(6,:));  % Autoregulation Equilibrium Compliance
 sigma_Gx_STD(t) = std(x(6,:));
 
+app_ICP_MEAN(t) = mean(x(8,:));
+
 I_belief(t) = sum(x(7,:))/N;
 
 %% Propagate - Weight - Resample
 reverseStr = [];
 for t=2:T;
     reverseStr = displayprogress(t/T*100,reverseStr);
-    x = ICP_prob(x,true_abp(t),pvs(t),true_abp(t-1),pvs(t-1),Ro,kE,G,tau);
-    w = normpdf(obs_ICP(t),x(1,:),1);
+    x = ICP_prob(x,true_abp(t),pvs(t),true_abp(t-1),pvs(t-1),Ro,kE,G,tau,t);
+    w = normpdf(obs_ICP(t),x(8,:),1);
     if (sum(w) == 0);
         break;
     end
@@ -98,6 +99,7 @@ for t=2:T;
     sigma_Gx_STD(t) = std(x(6,:));
 
     I_belief(t) = sum(x(7,:))/N;
+    app_ICP_MEAN(t) = mean(x(8,:));
 
 
 end
@@ -105,15 +107,15 @@ end
 toc()
 figure;
 hold on;
-plot(0:T-1,I_belief,'k','LineWidth',2)
 % 
 set(gca,'XTick',[0:60:T]);
 set(gca,'XTickLabel',[0:T/60]);
 shadedErrorBar(0:T-1,Pic,Pic_STD,'m');
 plot(0:T-1,Pic,'b')
 plot(obs_ICP,'r','LineWidth',2);
-
-ylim([0 30]);
+plot(0:T-1,I_belief,'k','LineWidth',2)
+plot(0:T-1,app_ICP_MEAN,'k','LineWidth',2)
+ylim([0 60]);
 xlim([0 T])
 xlabel('minutes')
 ylabel('mmHg')
